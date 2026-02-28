@@ -1,0 +1,449 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-display: var(--font-chakra-petch);
+  --font-body: var(--font-rajdhani);
+  --font-mono: var(--font-share-tech-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Wasteland palette — brightened for readability */
+  --color-waste-bg: #0a0908;
+  --color-waste-surface: #13120e;
+  --color-waste-panel: #1a1810;
+  --color-waste-border: #322c1e;
+  --color-waste-amber: #e5a21a;
+  --color-waste-amber-light: #f5b731;
+  --color-waste-toxic: #9ae02a;
+  --color-waste-toxic-light: #b5f247;
+  --color-waste-rust: #c52a2a;
+  --color-waste-rust-light: #e04040;
+  --color-waste-bone: #ede6d4;
+  --color-waste-sand: #c9bc9e;
+  --color-waste-dim: #928672;
+  --color-waste-ash: #584f3d;
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: #0a0908;
+  --foreground: #ede6d4;
+  --card: #1a1810;
+  --card-foreground: #ede6d4;
+  --popover: #13120e;
+  --popover-foreground: #ede6d4;
+  --primary: #e5a21a;
+  --primary-foreground: #0a0908;
+  --secondary: #9ae02a;
+  --secondary-foreground: #0a0908;
+  --muted: #13120e;
+  --muted-foreground: #928672;
+  --accent: #322c1e;
+  --accent-foreground: #ede6d4;
+  --destructive: #c52a2a;
+  --border: #322c1e;
+  --input: #322c1e;
+  --ring: #e5a21a;
+  --chart-1: #e5a21a;
+  --chart-2: #9ae02a;
+  --chart-3: #e04040;
+  --chart-4: #c9bc9e;
+  --chart-5: #f5b731;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    font-weight: 500;
+  }
+}
+
+/* === ATMOSPHERIC BACKGROUND === */
+/* Layered radial gradients simulating distant fires, toxic fog, and wasteland atmosphere */
+.wasteland-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* Warm amber glow — top-left, like a distant fire */
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(229, 162, 26, 0.06) 0%, transparent 60%),
+    /* Rust embers — bottom-right corner */
+    radial-gradient(ellipse 60% 50% at 85% 80%, rgba(197, 42, 42, 0.04) 0%, transparent 55%),
+    /* Toxic haze — center-right, subtle green fog */
+    radial-gradient(ellipse 50% 70% at 70% 35%, rgba(154, 224, 42, 0.025) 0%, transparent 50%),
+    /* Deep amber wash — center horizon */
+    radial-gradient(ellipse 120% 40% at 50% 55%, rgba(229, 162, 26, 0.035) 0%, transparent 70%),
+    /* Subtle warm fog across bottom */
+    radial-gradient(ellipse 100% 30% at 50% 100%, rgba(201, 188, 158, 0.03) 0%, transparent 70%),
+    /* Base darkness */
+    #0a0908;
+}
+
+/* Ensure main content sits above atmospheric background */
+nav, main, footer, header {
+  position: relative;
+  z-index: 1;
+}
+
+/* === WASTELAND EFFECTS === */
+
+/* Film grain */
+.grain::before {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+  animation: grain-shift 0.5s steps(1) infinite;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(1px, -1px); }
+  75% { transform: translate(-1px, 2px); }
+  100% { transform: translate(2px, -2px); }
+}
+
+/* Scanlines */
+.scanlines::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.06) 2px,
+    rgba(0, 0, 0, 0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* CRT vignette — softened for readability */
+.vignette::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(10, 9, 8, 0.4) 100%);
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* Corner brackets on cards */
+.bracket {
+  position: relative;
+}
+
+.bracket::before,
+.bracket::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+.bracket::before {
+  top: -1px; left: -1px;
+  border-top: 2px solid var(--color-waste-amber, #e5a21a);
+  border-left: 2px solid var(--color-waste-amber, #e5a21a);
+  opacity: 0.5;
+}
+
+.bracket::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 2px solid var(--color-waste-amber, #e5a21a);
+  border-right: 2px solid var(--color-waste-amber, #e5a21a);
+  opacity: 0.5;
+}
+
+/* Glow text */
+.glow-amber { text-shadow: 0 0 12px rgba(229, 162, 26, 0.5), 0 0 30px rgba(229, 162, 26, 0.2); }
+.glow-toxic { text-shadow: 0 0 12px rgba(154, 224, 42, 0.5), 0 0 30px rgba(154, 224, 42, 0.2); }
+
+/* Gradient text */
+.gradient-hot {
+  background: linear-gradient(135deg, #f5b731 0%, #e5a21a 40%, #c52a2a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bone {
+  background: linear-gradient(135deg, #ede6d4 0%, #c9bc9e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Status pulse */
+@keyframes rad-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(132, 204, 22, 0.6); }
+  50% { opacity: 0.3; box-shadow: 0 0 1px rgba(132, 204, 22, 0.2); }
+}
+
+.status-live {
+  animation: rad-pulse 2s ease-in-out infinite;
+}
+
+/* Title flicker */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+.flicker {
+  animation: flicker 4s ease-in-out infinite;
+}
+
+/* Radiation diagonal stripes */
+.rad-stripe {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgba(229, 162, 26, 0.04) 8px,
+    rgba(229, 162, 26, 0.04) 16px
+  );
+}
+
+/* Hero ambient glow */
+.hero-glow {
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(229, 162, 26, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 70% 50%, rgba(154, 224, 42, 0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 50% 70%, rgba(197, 42, 42, 0.04) 0%, transparent 70%);
+}
+
+/* Panel hover glow */
+.panel-hover {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.panel-hover:hover {
+  border-color: rgba(229, 162, 26, 0.4);
+  box-shadow:
+    0 0 20px rgba(229, 162, 26, 0.08),
+    inset 0 1px 0 rgba(229, 162, 26, 0.1);
+}
+
+/* Link underline animation */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0; height: 1px;
+  background: #e5a21a;
+  transition: width 0.3s ease;
+}
+
+.link-underline:hover::after { width: 100%; }
+
+/* === ARTICLE PROSE === */
+.article-prose {
+  color: var(--color-waste-sand);
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.article-prose h2 {
+  font-family: var(--font-display);
+  color: var(--color-waste-bone);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-waste-border);
+}
+
+.article-prose h3 {
+  font-family: var(--font-display);
+  color: var(--color-waste-amber);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.article-prose p {
+  margin-bottom: 1.25rem;
+}
+
+.article-prose strong {
+  color: var(--color-waste-bone);
+  font-weight: 600;
+}
+
+.article-prose a {
+  color: var(--color-waste-amber);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.article-prose a:hover {
+  color: var(--color-waste-amber-light);
+}
+
+.article-prose ul, .article-prose ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.article-prose li {
+  margin-bottom: 0.5rem;
+}
+
+.article-prose li::marker {
+  color: var(--color-waste-ash);
+}
+
+.article-prose blockquote {
+  border-left: 3px solid var(--color-waste-amber);
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+  background: rgba(229, 162, 26, 0.05);
+  border-radius: 0 4px 4px 0;
+}
+
+.article-prose blockquote p {
+  margin-bottom: 0;
+  color: var(--color-waste-bone);
+  font-style: italic;
+}
+
+.article-prose pre {
+  background: #0d0c0a;
+  border: 1px solid var(--color-waste-border);
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.article-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.article-prose :not(pre) > code {
+  background: rgba(229, 162, 26, 0.1);
+  color: var(--color-waste-amber);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.article-prose pre code {
+  color: var(--color-waste-sand);
+  background: none;
+  padding: 0;
+}
+
+/* Syntax highlighting — wasteland palette */
+.article-prose .kw { color: var(--color-waste-amber); }
+.article-prose .fn { color: var(--color-waste-toxic); }
+.article-prose .st { color: #d4976a; }
+.article-prose .cm { color: var(--color-waste-ash); font-style: italic; }
+.article-prose .nb { color: var(--color-waste-bone); }
+.article-prose .op { color: var(--color-waste-dim); }
+.article-prose .num { color: var(--color-waste-rust-light); }
+
+.article-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.article-prose th {
+  font-family: var(--font-display);
+  color: var(--color-waste-amber);
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--color-waste-border);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.article-prose td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--color-waste-border);
+  color: var(--color-waste-sand);
+}
+
+.article-prose tr:hover td {
+  background: rgba(229, 162, 26, 0.03);
+}
+
+.article-prose hr {
+  border: none;
+  border-top: 1px solid var(--color-waste-border);
+  margin: 2.5rem 0;
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
