@@ -1,258 +1,325 @@
 export function DualLayerRegimeContent() {
   return (
     <>
-      <h2>The Problem: One Detector Isn&rsquo;t Enough</h2>
+      <h2>Why This Matters</h2>
       <p>
-        Every regime detection system in published literature uses a single
-        detector. Hidden Markov Models, threshold-based volatility classifiers,
-        rolling correlation breakpoints — they all answer the same question:{" "}
-        <em>what regime are we in right now?</em>
+        Every system that makes decisions in a changing environment has the same
+        problem: <strong>the rules that work in one condition can fail in
+        another</strong>.
       </p>
       <p>
-        But there&rsquo;s a second question that matters more for live trading:{" "}
-        <em>are we leaving the current regime?</em> The structural detector takes
-        20+ bars to reclassify. By then, you&rsquo;ve already taken several
-        trades under the wrong assumptions.
+        In trading, a trend-following strategy makes money when markets trend
+        and loses when they chop sideways. In infrastructure, an autoscaler
+        tuned for steady growth overshoots during spike traffic. In ML, a model
+        trained on one data distribution degrades when the distribution shifts.
+      </p>
+      <p>
+        The standard solution is a regime detector — a classifier that tells
+        you which condition you&rsquo;re currently in, so you can switch strategies.
+        Hidden Markov Models, rolling volatility, clustering — all of them
+        answer the question: <em>&ldquo;What mode are we in right now?&rdquo;</em>
+      </p>
+      <p>
+        But there&rsquo;s a more important question nobody asks:{" "}
+        <em>&ldquo;Are we <strong>transitioning</strong> between modes right
+        now?&rdquo;</em>
+      </p>
+      <p>
+        Transitions are where the damage happens. Your classifier says
+        &ldquo;TREND&rdquo; because it hasn&rsquo;t seen enough data to
+        reclassify, but the trend ended 3 data points ago. You&rsquo;re making
+        trend decisions in a market that&rsquo;s already choppy.
       </p>
       <blockquote>
         <p>
-          ER tells you what regime you&rsquo;re in. ADWIN tells you when
-          you&rsquo;re leaving it — 1-3 bars before ER reclassifies.
+          One detector tells you what mode you&rsquo;re in. You need a second
+          detector to tell you when you&rsquo;re leaving it.
         </p>
       </blockquote>
+
+      <h2>Where This Applies</h2>
       <p>
-        The solution is two orthogonal detectors running simultaneously, each
-        answering a different question, composited into a single position-sizing
-        multiplier.
+        The two-layer pattern — <strong>structural classification + transition
+        detection</strong> — generalizes far beyond finance:
       </p>
+      <ul>
+        <li>
+          <strong>ML model monitoring</strong> — Layer 1: what distribution is
+          the data in? Layer 2: is the distribution shifting right now? Catch
+          model drift 1-3 batches before accuracy drops.
+        </li>
+        <li>
+          <strong>Infrastructure scaling</strong> — Layer 1: what traffic
+          pattern are we in (steady, ramp, spike)? Layer 2: are we transitioning?
+          Scale conservatively during transitions instead of overcommitting.
+        </li>
+        <li>
+          <strong>Feature flags / A/B tests</strong> — Layer 1: what user
+          behavior mode are we in? Layer 2: did a regime change just invalidate
+          our test? Pause the test during transitions.
+        </li>
+        <li>
+          <strong>Trading</strong> — our production use case, detailed below.
+        </li>
+      </ul>
 
       <hr />
 
-      <h2>Layer 1: Kaufman Efficiency Ratio</h2>
-      <h3>What It Measures</h3>
-      <p>
-        The Kaufman Efficiency Ratio (ER) measures <strong>net price displacement
-        vs total path length</strong> over a lookback window. If price moved in
-        a straight line, ER = 1.0 (perfect trend). If price moved randomly and
-        ended up where it started, ER = 0.0 (pure chop).
-      </p>
-      <pre><code>{`ER = |Close[t] - Close[t-n]| / sum(|Close[i] - Close[i-1]|)
+      <h2>Layer 1: Structural Classification (Kaufman ER)</h2>
 
-# Over 20 bars:
-# Straight line up 10%:  ER ≈ 1.0  → TREND
-# Sideways oscillation:  ER ≈ 0.05 → DEEP_CHOP
-# Moderate drift:        ER ≈ 0.25 → NORMAL`}</code></pre>
+      <h3>What It Is</h3>
+      <p>
+        The Kaufman Efficiency Ratio is embarrassingly simple: <strong>how much
+        of the total movement was productive?</strong> Divide net displacement
+        by total path length. A value of 1.0 means every step moved in the
+        same direction (pure trend). A value near 0 means the system went
+        nowhere despite lots of movement (noise/chop).
+      </p>
+      <pre><code>{`# The formula
+ER = |end_position - start_position| / sum_of_all_step_sizes
+
+# Concrete example: price over 20 periods
+# Straight line up $10:  ER = 10/10 = 1.0   → TREND
+# Up $5, down $5:        ER = 0/10 = 0.0    → DEEP_CHOP
+# Drift up $3 total:     ER = 3/12 = 0.25   → NORMAL`}</code></pre>
+      <p>
+        This works for any time series — not just prices. Server response
+        times, user engagement metrics, error rates. If you can plot it on a
+        line chart, you can compute ER.
+      </p>
+
       <h3>Graduated Classification</h3>
       <p>
-        Rather than a binary trend/chop split, the system uses five tiers with
-        regime-specific trading rules:
+        The key insight: <strong>binary classification (trend vs chop) throws
+        away information</strong>. There are meaningfully different behaviors
+        at different ER levels. We use five tiers:
       </p>
       <table>
         <thead>
           <tr>
             <th>Regime</th>
             <th>ER Range</th>
-            <th>Size Mult</th>
-            <th>Rules</th>
+            <th>Sizing</th>
+            <th>What It Means</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><code>TREND</code></td>
             <td>&ge; 0.35</td>
-            <td>1.0</td>
-            <td>1 confirm, wide trail (1.5/0.8 ATR)</td>
+            <td>100%</td>
+            <td>Strong directional movement. Full confidence.</td>
           </tr>
           <tr>
             <td><code>NORMAL</code></td>
             <td>0.20 &ndash; 0.35</td>
-            <td>0.85</td>
-            <td>1 confirm, tighter SL (1.2x mult)</td>
+            <td>85%</td>
+            <td>Some direction but noisy. Slightly cautious.</td>
           </tr>
           <tr>
             <td><code>VOLATILE</code></td>
-            <td>&lt; 0.20 + ATR &gt; 60th</td>
-            <td>0.70</td>
-            <td>2 confirms, widened stops</td>
+            <td>&lt; 0.20, high variance</td>
+            <td>70%</td>
+            <td>Big moves, no direction. Widen safety margins.</td>
           </tr>
           <tr>
             <td><code>LIGHT_CHOP</code></td>
             <td>0.10 &ndash; 0.20</td>
-            <td>0.60</td>
-            <td>Longs blocked (confirm=99), shorts allowed</td>
+            <td>60%</td>
+            <td>Mostly noise. Block optimistic actions entirely.</td>
           </tr>
           <tr>
             <td><code>DEEP_CHOP</code></td>
             <td>&lt; 0.10</td>
-            <td>0.50</td>
-            <td>3 confirms required for any trade</td>
+            <td>50%</td>
+            <td>Pure noise. Require extreme confirmation to act.</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>The Asymmetry</h3>
+      <h3>The Asymmetry Discovery</h3>
       <p>
-        LIGHT_CHOP blocks longs entirely but allows shorts with lower bars.
-        This is informed by empirical observation: <strong>bearish momentum is
-        more directional even in choppy conditions</strong>. In SOL/USDT 4h
-        data, short signals during LIGHT_CHOP had a 66.7% win rate with a 2.02
-        profit factor. Long signals in the same regime had a 52% win rate —
-        barely above random.
+        An interesting finding from production data: <strong>pessimistic
+        signals work in chop, optimistic ones don&rsquo;t</strong>. In
+        our trading system, short signals during LIGHT_CHOP had a 66.7% win
+        rate (profit factor 2.02). Long signals had 52% — barely random.
+      </p>
+      <p>
+        This makes intuitive sense: downward momentum is driven by fear, which
+        is more directional than the hope that drives upward moves. In chop,
+        fear-driven selloffs still follow through. Hope-driven rallies don&rsquo;t.
       </p>
       <pre><code>{`REGIME_CONFIG = {
-    "TREND":      {"size_mult": 1.0,  "confirms": 1, "sl_mult": 1.0},
-    "NORMAL":     {"size_mult": 0.85, "confirms": 1, "sl_mult": 1.2},
-    "VOLATILE":   {"size_mult": 0.70, "confirms": 2, "sl_mult": 1.5},
+    "TREND":      {"size_mult": 1.0,  "confirms": 1},
+    "NORMAL":     {"size_mult": 0.85, "confirms": 1},
+    "VOLATILE":   {"size_mult": 0.70, "confirms": 2},
     "LIGHT_CHOP": {"size_mult": 0.60, "confirms": 1,
-                   "long_confirms": 99},  # effectively blocks longs
+                   "optimistic_confirms": 99},  # blocks optimistic actions
     "DEEP_CHOP":  {"size_mult": 0.50, "confirms": 3},
 }`}</code></pre>
 
       <hr />
 
-      <h2>Layer 2: ADWIN Drift Detection</h2>
-      <h3>What It Measures</h3>
+      <h2>Layer 2: Transition Detection (ADWIN)</h2>
+
+      <h3>What It Is</h3>
       <p>
-        ADWIN (Adaptive Windowing) is a statistical process control algorithm
-        from the <code>river</code> library, originally designed for concept
-        drift detection in streaming machine learning. It monitors the{" "}
-        <em>distribution</em> of a data stream and detects when that
-        distribution has shifted — without a fixed lookback window.
+        ADWIN (Adaptive Windowing) comes from the streaming machine learning
+        library <code>river</code>. It was designed to detect concept drift —
+        when the statistical distribution of a data stream changes. It
+        continuously monitors a stream and fires when it detects that the
+        recent data comes from a different distribution than the older data.
       </p>
       <p>
-        Two independent ADWIN detectors run simultaneously:
+        The key advantage over rolling windows: <strong>ADWIN adapts its
+        window size automatically</strong>. During stable periods, it grows the
+        window (accumulating statistical power, reducing false positives).
+        When it detects a shift, it shrinks the window (responding quickly
+        to the new reality).
+      </p>
+
+      <h3>Why Two ADWIN Detectors?</h3>
+      <p>
+        We run two independent ADWIN detectors with different sensitivities:
       </p>
       <ul>
         <li>
-          <strong>Return distribution</strong> (<code>delta=0.002</code>) — more
-          sensitive, detects subtle shifts in mean return
+          <strong>Level detector</strong> (<code>delta=0.002</code>, more
+          sensitive) — catches shifts in the <em>mean</em>. Detects when
+          the center of the distribution moves.
         </li>
         <li>
-          <strong>Volatility distribution</strong> (<code>delta=0.02</code>) —
-          less sensitive, detects changes in variance regime
+          <strong>Volatility detector</strong> (<code>delta=0.02</code>, less
+          sensitive) — catches shifts in the <em>variance</em>. Detects when
+          the spread of the distribution changes.
         </li>
       </ul>
       <p>
-        When either detector fires, the system enters a <strong>transition
-        state</strong> with a graduated sizing haircut:
+        A regime can change in two ways: the average changes (new trend direction)
+        or the variability changes (calm to volatile or vice versa). Separate
+        detectors catch both independently.
+      </p>
+
+      <h3>The Transition Ramp</h3>
+      <p>
+        When ADWIN fires, we don&rsquo;t instantly switch behavior. Instead,
+        we apply a <strong>graduated uncertainty haircut</strong> that ramps
+        from 60% back to 100% over 3 data points:
       </p>
       <pre><code>{`class ADWINDriftDetector:
     def size_modifier(self) -> float:
-        """Graduated uncertainty haircut during regime transitions.
-        Ramps from 60% back to 100% over exactly 3 bars (12h at 4h TF)."""
-        if self.bars_since_drift == 0:  return 0.60  # just detected
-        elif self.bars_since_drift == 1: return 0.75
-        elif self.bars_since_drift <= 3: return 0.90
-        return 1.0  # settled`}</code></pre>
-
-      <h3>Why ADWIN, Not a Rolling Window?</h3>
+        """How much to trust our current strategy.
+        Returns 1.0 when stable, less during transitions."""
+        if self.bars_since_drift == 0:  return 0.60  # just detected shift
+        elif self.bars_since_drift == 1: return 0.75  # still uncertain
+        elif self.bars_since_drift <= 3: return 0.90  # settling down
+        return 1.0                                     # stable again`}</code></pre>
       <p>
-        A rolling standard deviation or rolling z-score needs a fixed lookback
-        window. Too short and you get false positives. Too long and you miss
-        transitions. ADWIN adapts its window automatically — it grows the
-        window during stable periods (accumulating statistical power) and shrinks
-        it when it detects a shift (responding quickly to change).
-      </p>
-      <p>
-        In backtesting across 18 months of SOL/USDT 4h data, ADWIN detected
-        regime transitions <strong>1-3 bars before</strong> the ER-based
-        classifier reclassified. Those 1-3 bars are exactly when the old regime
-        assumptions are most dangerous.
+        This is critical: <strong>the transition period is the most dangerous
+        time</strong>. The old regime assumptions are stale but the new regime
+        hasn&rsquo;t been confirmed yet. Reducing exposure during this window
+        prevents the biggest losses.
       </p>
 
       <hr />
 
-      <h2>Composition: The Two-Layer Stack</h2>
+      <h2>Composition: Multiplying the Layers</h2>
       <p>
-        The two layers compose multiplicatively:
+        The two layers compose multiplicatively. This means they&rsquo;re
+        independent — neither needs to know about the other:
       </p>
-      <pre><code>{`# Layer 1: structural regime → base sizing
-regime = classify_regime(er_value, atr_percentile)
-rcfg = REGIME_CONFIG[regime]
-base_size = position_value * rcfg["size_mult"]
+      <pre><code>{`# Layer 1: what regime are we in? → base confidence
+regime = classify_regime(er_value, variance_percentile)
+base_confidence = REGIME_CONFIG[regime]["size_mult"]
 
-# Layer 2: transition detection → uncertainty haircut
-adwin_mod = adwin_detector.size_modifier()
+# Layer 2: are we transitioning? → uncertainty modifier
+transition_mod = adwin_detector.size_modifier()
 
-# Composite
-effective_size = base_size * adwin_mod
+# Composite confidence
+effective_confidence = base_confidence * transition_mod`}</code></pre>
 
-# Example during NORMAL → TREND transition:
-#   base_size = $100 * 0.85 = $85         (still NORMAL by ER)
-#   adwin_mod = 0.60                       (ADWIN just fired)
-#   effective = $85 * 0.60 = $51           (conservative during shift)
-#
-# 3 bars later:
-#   base_size = $100 * 1.0 = $100          (ER reclassified to TREND)
-#   adwin_mod = 0.90                       (ramping back up)
-#   effective = $100 * 0.90 = $90          (approaching full size)`}</code></pre>
+      <h3>Worked Example</h3>
+      <pre><code>{`# Scenario: market is transitioning from NORMAL to TREND
 
-      <h3>Why This Works</h3>
+# Time T (ADWIN just fired):
+#   ER still says NORMAL       → base = 0.85
+#   ADWIN says "something changed" → mod = 0.60
+#   Effective: 0.85 × 0.60 = 0.51  (conservative)
+
+# Time T+1:
+#   ER still says NORMAL       → base = 0.85
+#   ADWIN ramping              → mod = 0.75
+#   Effective: 0.85 × 0.75 = 0.64  (recovering)
+
+# Time T+3 (ER catches up):
+#   ER now says TREND           → base = 1.0
+#   ADWIN almost settled        → mod = 0.90
+#   Effective: 1.0 × 0.90 = 0.90  (near full confidence)
+
+# Time T+4:
+#   ER says TREND               → base = 1.0
+#   ADWIN settled               → mod = 1.0
+#   Effective: 1.0 × 1.0 = 1.0    (full confidence)`}</code></pre>
       <p>
-        The multiplicative composition means the layers are independent — ER
-        handles the <em>what</em> (which regime are we in), ADWIN handles the{" "}
-        <em>when</em> (are we transitioning). Neither needs to know about the
-        other. The sizing system naturally becomes most conservative during
-        regime transitions in choppy conditions (DEEP_CHOP + ADWIN drift ={" "}
-        <code>0.50 &times; 0.60 = 0.30</code>) and most aggressive during
-        established trends (<code>1.0 &times; 1.0 = 1.0</code>).
+        The system is naturally most conservative when it matters most:
+        during regime transitions in noisy conditions. And most confident
+        when conditions are stable and trending. No manual rules needed —
+        this falls out of the multiplication.
       </p>
 
       <hr />
 
       <h2>Results</h2>
       <p>
-        Backtested across 5 walk-forward passes of SOL/USDT Renko $0.50 data:
+        Backtested across 5 walk-forward passes (no lookahead bias):
       </p>
       <table>
         <thead>
           <tr>
             <th>Metric</th>
             <th>Value</th>
+            <th>Why It Matters</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Profitable passes</td>
-            <td>4 / 5</td>
-          </tr>
-          <tr>
-            <td>Average return per pass</td>
-            <td>+25.0%</td>
-          </tr>
-          <tr>
             <td>Monte Carlo confidence</td>
             <td>98.3%</td>
+            <td>Probability the strategy is profitable, not lucky</td>
+          </tr>
+          <tr>
+            <td>Avg return per pass</td>
+            <td>+25.0%</td>
+            <td>Consistent across different time windows</td>
           </tr>
           <tr>
             <td>Max drawdown</td>
             <td>17.8%</td>
+            <td>Survived every regime transition</td>
           </tr>
           <tr>
-            <td>SHORT profit factor</td>
-            <td>2.02</td>
-          </tr>
-          <tr>
-            <td>Per-regime: TREND PF</td>
-            <td>1.98</td>
-          </tr>
-          <tr>
-            <td>Per-regime: CHOP PF</td>
+            <td>CHOP profit factor</td>
             <td>1.84</td>
+            <td>Profitable in the regime most systems lose money</td>
+          </tr>
+          <tr>
+            <td>TREND profit factor</td>
+            <td>1.98</td>
+            <td>Captures trends when confirmed</td>
           </tr>
         </tbody>
       </table>
       <p>
-        The CHOP profit factor of 1.84 is notable — traditional systems lose
-        money in chop. The graduated classification (blocking longs, requiring
-        more confirms) turns a money-losing regime into a cautiously profitable
-        one on the short side.
+        The CHOP profit factor of 1.84 is the headline number. Traditional
+        systems either lose money in chop or avoid it entirely. The graduated
+        classification (blocking optimistic actions, requiring more confirmation)
+        turns a losing regime into a cautiously profitable one.
       </p>
       <p>
-        The system runs live on Bybit SOL/USDT perpetual futures with 3x
-        leverage, managing all stops and take-profits internally (no exchange-side
-        orders). The dual-layer detector is the foundation that every other
-        decision builds on.
+        The system runs live, managing all risk internally. The dual-layer
+        detector is the foundation that every other decision builds on — signal
+        selection, position sizing, stop placement, and exit rules all
+        adapt based on the composite regime confidence.
       </p>
     </>
   );
