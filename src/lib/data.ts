@@ -68,7 +68,6 @@ export const PROJECTS: readonly Project[] = [
       { value: "688", label: "Predictions" },
     ],
     tags: ["Python", "Bayesian", "Monte Carlo", "Walk-Forward"],
-    repoUrl: "https://github.com/kris-welc/asi-simulator",
   },
   {
     id: "SYS::SYBIL",
@@ -82,7 +81,6 @@ export const PROJECTS: readonly Project[] = [
       { value: "VAR", label: "Forecasting" },
     ],
     tags: ["Python", "HMM", "Geopolitical Risk", "LLM Scoring"],
-    repoUrl: "https://github.com/kris-welc/sybil",
   },
   {
     id: "SYS::V33_MONEYTREES",
@@ -96,7 +94,6 @@ export const PROJECTS: readonly Project[] = [
       { value: "2.02", label: "Profit Factor" },
     ],
     tags: ["Python", "Bybit", "Thompson Sampling", "VPIN/CVD"],
-    repoUrl: "https://github.com/kris-welc/moneytrees",
   },
   {
     id: "SYS::COPYBOT",
@@ -110,7 +107,6 @@ export const PROJECTS: readonly Project[] = [
       { value: "Kelly", label: "Sizing" },
     ],
     tags: ["Python", "Polymarket", "Elo Model", "Ensemble"],
-    repoUrl: "https://github.com/kris-welc/copybot",
   },
 ] as const;
 
@@ -163,7 +159,6 @@ export const ARTICLES: readonly Article[] = [
     accent: "toxic",
     readTime: "10 min",
     topicCount: 4,
-    repoUrl: "https://github.com/kris-welc/agent-algebra",
     topics: [
       {
         title: "Kaufman Efficiency Ratio",
@@ -193,7 +188,6 @@ export const ARTICLES: readonly Article[] = [
     accent: "rust",
     readTime: "8 min",
     topicCount: 3,
-    repoUrl: "https://github.com/kris-welc/agent-algebra",
     topics: [
       {
         title: "WebSocket Daemon Architecture",
@@ -389,7 +383,6 @@ export const SIDE_PROJECTS: readonly SideProject[] = [
     description:
       "iOS ally/achiever system with smart notification scheduling, habit tracking, and adaptive behavior via Cloud Functions.",
     accent: "amber",
-    repoUrl: "https://github.com/kris-welc/ww1",
   },
   {
     name: "Intel Digest",
@@ -397,7 +390,6 @@ export const SIDE_PROJECTS: readonly SideProject[] = [
     description:
       "AI-powered news curation across 4 channels — tech, wellness, jobs, and personal. LLM-scored with customizable delivery.",
     accent: "toxic",
-    repoUrl: "https://github.com/kris-welc/intel-digest",
   },
 ] as const;
 

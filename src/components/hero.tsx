@@ -32,10 +32,10 @@ export function Hero() {
         </div>
 
         <a
-          href="#projects"
+          href="#articles"
           className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-waste-amber transition-colors hover:text-waste-amber-light"
         >
-          <span>Access systems</span>
+          <span>Read dispatches</span>
           <svg
             className="h-4 w-4 animate-bounce"
             fill="none"

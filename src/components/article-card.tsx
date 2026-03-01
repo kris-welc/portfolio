@@ -12,20 +12,15 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { WastelandBadge } from "@/components/wasteland-badge";
-import { HeartIcon, HeartFilledIcon } from "@/components/icons";
 import type { Article } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 interface ArticleCardProps {
   readonly article: Article;
-  readonly liked: boolean;
-  readonly onToggleLike: (id: string) => void;
 }
 
 export function ArticleCard({
   article,
-  liked,
-  onToggleLike,
 }: ArticleCardProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -66,24 +61,22 @@ export function ArticleCard({
             </span>
           )}
         </div>
-        <CardAction>
-          <button
-            onClick={() => onToggleLike(article.id)}
-            className={cn(
-              "flex items-center gap-1 rounded-md px-2 py-1.5 font-mono text-xs transition-all",
-              liked
-                ? "text-waste-rust-light"
-                : "text-waste-dim hover:text-waste-rust-light"
-            )}
-            aria-label={liked ? "Unlike article" : "Like article"}
-          >
-            {liked ? (
-              <HeartFilledIcon className="h-4 w-4 text-waste-rust-light" />
-            ) : (
-              <HeartIcon className="h-4 w-4" />
-            )}
-          </button>
-        </CardAction>
+        {article.repoUrl && (
+          <CardAction>
+            <a
+              href={article.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-md border border-waste-amber/30 px-2.5 py-1.5 font-mono text-[0.65rem] tracking-wider text-waste-amber transition-all hover:border-waste-amber hover:bg-waste-amber/10 hover:text-waste-amber-light"
+              aria-label="Star on GitHub"
+            >
+              <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.771l-7.416 3.642 1.48-8.279L0 9.306l8.332-1.151z" />
+              </svg>
+              STAR
+            </a>
+          </CardAction>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-4">

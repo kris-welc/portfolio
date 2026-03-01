@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Chakra_Petch, Rajdhani, Share_Tech_Mono } from "next/font/google";
+import { Nav } from "@/components/nav";
 import { ErrorSuppressor } from "@/components/error-suppressor";
 import "./globals.css";
 
@@ -39,6 +40,7 @@ export default function RootLayout({
       >
         <ErrorSuppressor />
         <div className="wasteland-bg" aria-hidden="true" />
+        <Nav />
         {children}
       </body>
     </html>
