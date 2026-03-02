@@ -117,7 +117,7 @@ export const ARTICLES: readonly Article[] = [
     date: "2026-02-28",
     title: "Agent Algebra: Theorem-Guided Composition for Self-Improving AI Systems",
     hook: "LLM orchestration has no formal theory. Chains, tools, and retry loops are plumbing — not algebra. Six mathematical theorems provide convergence guarantees that transform agent composition from craft into engineering.",
-    tags: ["Agent Composition", "Mathematical Guarantees", "Open Source"],
+    tags: ["Agent Composition", "Mathematical Guarantees", "Dual Licensed"],
     accent: "amber",
     readTime: "14 min",
     topicCount: 6,

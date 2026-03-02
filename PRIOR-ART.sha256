@@ -1,0 +1,16 @@
+Agent Algebra — Prior Art Evidence
+Copyright (c) 2026 Kris Welc
+Generated: 2026-03-02
+
+These SHA-256 hashes document the content of the Agent Algebra intellectual
+property files as of the date above. Combined with git commit history, they
+serve as timestamped evidence of authorship and prior art.
+
+4b9e5f5eca912174cd9ec9d7dc35ba0f9e874f655d449f4e54c19dcd13421e35  src/lib/articles/agent-algebra.tsx
+7704b6b51cf4d28fa71d4a648dc943bb033e477e55a6e4724ad364e47af7b79e  src/components/diagrams/contraction-convergence.tsx
+777ba26ff116036d99da5cd69fc1910e85760cc04f8a61579a29f88cee6dbb71  src/components/diagrams/adaboost-cascade.tsx
+c38f20a06656a427998f806b24c7735b9e3fca09b3f7c61c78c0e91cc4037cb7  src/components/diagrams/belief-propagation.tsx
+eb0bd6bbc2a33a5c0768128aa5b76677b5d36b989a03d4ea376f2c8bb90d6f9c  src/components/diagrams/diagram-shell.tsx
+
+Verification: shasum -a 256 -c PRIOR-ART.sha256
+(ignore the header lines — only the hash lines will verify)

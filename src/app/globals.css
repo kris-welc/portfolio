@@ -436,6 +436,39 @@ nav, main, footer, header {
   margin: 2.5rem 0;
 }
 
+/* Diagram slider */
+.diagram-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-waste-border);
+  outline: none;
+  cursor: pointer;
+}
+
+.diagram-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-waste-amber);
+  border: 2px solid var(--color-waste-surface);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(229, 162, 26, 0.4);
+}
+
+.diagram-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-waste-amber);
+  border: 2px solid var(--color-waste-surface);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(229, 162, 26, 0.4);
+}
+
 /* Scroll reveal */
 .reveal {
   opacity: 0;

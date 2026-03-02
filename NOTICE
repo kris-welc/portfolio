@@ -1,0 +1,71 @@
+Agent Algebra — Theorem-Guided Composition for Self-Improving AI Systems
+Copyright (c) 2026 Kris Welc. All rights reserved.
+
+================================================================================
+ORIGINAL WORK DECLARATION
+================================================================================
+
+The following are original contributions by Kris Welc, first published
+February 28, 2026:
+
+1. The "Agent Algebra" framework concept — mapping six classical mathematical
+   theorems to agent composition primitives with formal guarantees.
+
+2. The specific theorem-to-primitive mapping:
+   - Banach Fixed-Point Theorem     -> Contraction Mapping primitive
+   - Schapire AdaBoost Theorem      -> Cascade primitive
+   - de Finetti Proper Scoring Rules -> Calibration primitive
+   - Ole Peters Ergodicity Economics -> Kelly Sizing primitive
+   - Pearl Belief Propagation       -> Message Passing primitive
+   - Kolmogorov MDL Principle       -> Compression Filter primitive
+
+3. The implementation of these primitives as composable, immutable,
+   zero-dependency Python modules.
+
+4. Interactive visualizations demonstrating theorem convergence properties.
+
+5. The application of this framework to LLM pipeline orchestration,
+   multi-agent systems, and autonomous agent architectures.
+
+================================================================================
+MATHEMATICAL FOUNDATIONS — ATTRIBUTION
+================================================================================
+
+The mathematical theorems referenced in this work are established results
+from their respective fields. This framework builds upon, but does not claim
+ownership of, these foundational results:
+
+- Banach Fixed-Point Theorem (1922)
+  Stefan Banach. "Sur les operations dans les ensembles abstraits et leur
+  application aux equations integrales." Fundamenta Mathematicae 3: 133-181.
+
+- AdaBoost (1995)
+  Yoav Freund and Robert E. Schapire. "A decision-theoretic generalization
+  of on-line learning and an application to boosting." Journal of Computer
+  and System Sciences 55(1): 119-139.
+
+- Proper Scoring Rules
+  Bruno de Finetti (1962). "Does it make sense to speak of 'good probability
+  appraisers'?" In The Scientist Speculates, I.J. Good (ed.), pp. 357-364.
+
+- Ergodicity Economics
+  Ole Peters (2019). "The ergodicity problem in economics."
+  Nature Physics 15: 1216-1221.
+
+- Belief Propagation
+  Judea Pearl (1988). "Probabilistic Reasoning in Intelligent Systems:
+  Networks of Plausible Inference." Morgan Kaufmann.
+
+- Minimum Description Length
+  Andrey Kolmogorov (1963). "On Tables of Random Numbers."
+  Sankhya: The Indian Journal of Statistics, Series A 25: 369-376.
+  Peter Rissanen (1978). "Modeling by shortest data description."
+  Automatica 14(5): 465-471.
+
+================================================================================
+PRIOR ART TIMESTAMP
+================================================================================
+
+This work was first committed to version control on February 28, 2026.
+Git commit history serves as timestamped evidence of authorship.
+Additional prior art evidence is maintained in PRIOR-ART.sha256.

@@ -1,3 +1,12 @@
+// SPDX-License-Identifier: AGPL-3.0-only AND CC-BY-NC-SA-4.0
+// Copyright (c) 2026 Kris Welc. All rights reserved.
+// Article prose: CC BY-NC-SA 4.0 | Source code: AGPL-3.0
+// Commercial license: see /COMMERCIAL-LICENSE.md
+
+import { ContractionConvergence } from "@/components/diagrams/contraction-convergence";
+import { AdaBoostCascade } from "@/components/diagrams/adaboost-cascade";
+import { BeliefPropagation } from "@/components/diagrams/belief-propagation";
+
 export function AgentAlgebraContent() {
   return (
     <>
@@ -144,6 +153,8 @@ export function AgentAlgebraContent() {
         That&rsquo;s <code>k = 0.5</code>.
       </p>
 
+      <ContractionConvergence />
+
       <h3>The Code</h3>
       <pre><code>{`from agent_algebra import contraction_step, contraction_loop
 
@@ -214,6 +225,8 @@ result = contraction_loop(
         better than random (&gt;50%) can be combined into an arbitrarily accurate
         ensemble.
       </p>
+
+      <AdaBoostCascade />
 
       <h3>The Code</h3>
       <pre><code>{`from agent_algebra import boost_cascade
@@ -416,6 +429,8 @@ result = ergodic_kelly(
         ends up with a belief that accounts for all information in the network,
         even from nodes it never directly communicated with.
       </p>
+
+      <BeliefPropagation />
 
       <h3>The Code</h3>
       <pre><code>{`from agent_algebra import BeliefNode, build_graph, propagate
