@@ -112,6 +112,59 @@ export const PROJECTS: readonly Project[] = [
 
 export const ARTICLES: readonly Article[] = [
   {
+    id: "control-hierarchy",
+    slug: "control-hierarchy",
+    date: "2026-03-05",
+    title: "The Control Hierarchy: 10 Principles for Building Above the Model",
+    hook: "The chat window is a consumption interface. The people who will define the next decade are not typing better prompts \u2014 they are building the systems that contain, direct, and verify AI. Ten engineering principles, a six-level control hierarchy, and seven high-leverage applications for operating at the layer above the model.",
+    tags: ["AI Systems", "Control Architecture", "Strategic Position"],
+    accent: "amber",
+    readTime: "16 min",
+    topicCount: 10,
+    topics: [
+      {
+        title: "Components",
+        summary: "Models generate. External systems verify. Authority lives outside the model.",
+      },
+      {
+        title: "Pipelines",
+        summary: "Structured systems beat single prompts. Plan, execute, verify, repeat.",
+      },
+      {
+        title: "Memory",
+        summary: "Four layers: working, episodic, knowledge, procedural. No state means no learning.",
+      },
+      {
+        title: "Tools",
+        summary: "Let models decide what to call. Let tools do the actual work.",
+      },
+      {
+        title: "Loops",
+        summary: "Iterate with explicit stop conditions. Single-shot is fragile.",
+      },
+      {
+        title: "Hierarchy",
+        summary: "Six levels from consumer to goal designer. Position determines leverage.",
+      },
+      {
+        title: "Post-AGI",
+        summary: "Intelligence gets cheap. Data, compute, and goals become the bottleneck.",
+      },
+      {
+        title: "Agents",
+        summary: "One operator, many workers. Research, code, analysis, marketing \u2014 all automated.",
+      },
+      {
+        title: "Market",
+        summary: "Model companies, infrastructure, domain operators, users. Four layers.",
+      },
+      {
+        title: "Position",
+        summary: "Own data, own processes, own infrastructure. Everything else is rented.",
+      },
+    ],
+  },
+  {
     id: "agent-algebra",
     slug: "agent-algebra",
     date: "2026-02-28",

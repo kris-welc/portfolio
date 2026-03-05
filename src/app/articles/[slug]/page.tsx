@@ -2,11 +2,13 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArticleLayout } from "@/components/article-layout";
 import { ARTICLES } from "@/lib/data";
+import { ControlHierarchyContent } from "@/lib/articles/control-hierarchy";
 import { AgentAlgebraContent } from "@/lib/articles/agent-algebra";
 import { DualLayerRegimeContent } from "@/lib/articles/dual-layer-regime";
 import { VpinConvictionContent } from "@/lib/articles/vpin-conviction";
 
 const CONTENT_MAP: Record<string, React.ComponentType> = {
+  "control-hierarchy": ControlHierarchyContent,
   "agent-algebra": AgentAlgebraContent,
   "dual-layer-regime": DualLayerRegimeContent,
   "vpin-conviction": VpinConvictionContent,

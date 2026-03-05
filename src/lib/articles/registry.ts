@@ -6,6 +6,10 @@ export interface ArticleEntry {
 }
 
 export const ARTICLE_REGISTRY: Record<string, () => Promise<ComponentType>> = {
+  "control-hierarchy": async () => {
+    const mod = await import("./control-hierarchy");
+    return mod.ControlHierarchyContent;
+  },
   "agent-algebra": async () => {
     const mod = await import("./agent-algebra");
     return mod.AgentAlgebraContent;
