@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArticleLayout } from "@/components/article-layout";
+import { ViewTracker } from "@/components/view-tracker";
 import { ARTICLES } from "@/lib/data";
 import { ControlHierarchyContent } from "@/lib/articles/control-hierarchy";
 import { AgentAlgebraContent } from "@/lib/articles/agent-algebra";
@@ -44,6 +45,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
   return (
     <ArticleLayout article={article}>
+      <ViewTracker slug={slug} />
       <Content />
     </ArticleLayout>
   );
