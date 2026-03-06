@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { WastelandBadge } from "@/components/wasteland-badge";
 import { GitHubStarButton } from "@/components/github-star-button";
+import { ArticleStatsBar } from "@/components/article-stats-bar";
 import type { Article } from "@/lib/data";
 
 interface ArticleLayoutProps {
@@ -54,6 +55,8 @@ export function ArticleLayout({ article, children }: ArticleLayoutProps) {
             {formattedDate && <time dateTime={article.date}>{formattedDate}</time>}
             <span className="text-waste-border">|</span>
             <span>{article.readTime} read</span>
+            <span className="text-waste-border">|</span>
+            {article.slug && <ArticleStatsBar slug={article.slug} />}
           </div>
 
           <p className="mt-6 text-lg leading-relaxed text-waste-sand">

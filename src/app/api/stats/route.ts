@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const keys = await kv.keys("article:*");
@@ -23,7 +25,7 @@ export async function GET() {
     return NextResponse.json(stats, {
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+        "Cache-Control": "no-store",
       },
     });
   } catch {
