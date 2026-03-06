@@ -183,21 +183,32 @@ informed_ratio = abs(positive_flow - negative_flow) / total_flow
         The most reusable part of this system isn&rsquo;t the formula &mdash;
         it&rsquo;s the <strong>two-process architecture</strong>:
       </p>
-      <pre><code>{`┌─────────────────────┐     ┌──────────────────────┐
-│   DATA COLLECTOR    │     │   DECISION MAKER     │
-│                     │     │                      │
-│  Stream connection  │     │  Reads enrichment DB │
-│  Real-time ingest   ├────►│  with 2s timeout     │
-│  Aggregation        │write│                      │read
-│  Writes to SQLite   │     │  If stale/locked:    │
-│                     │     │  proceed without it  │
-└─────────────────────┘     └──────────────────────┘
-
-Key design decisions:
-• SQLite in WAL mode → concurrent reads during writes
-• 2-second read timeout → graceful degradation
-• No shared state → either process can restart independently
-• 1-hour aggregation window → balance between signal and noise`}</code></pre>
+      <p>
+        <strong>Process A: Data Collector</strong> &rarr; connects to stream,
+        ingests events in real time, aggregates into buckets, writes to SQLite.
+      </p>
+      <p>
+        <strong>Process B: Decision Maker</strong> &rarr; reads enrichment DB
+        with 2-second timeout. If stale or locked, proceeds without it.
+      </p>
+      <p>
+        The bridge is SQLite in WAL mode (write-ahead logging), which allows
+        concurrent reads during writes. Key design decisions:
+      </p>
+      <ul>
+        <li>
+          <strong>2-second read timeout</strong> &mdash; graceful degradation,
+          never blocks
+        </li>
+        <li>
+          <strong>No shared state</strong> &mdash; either process can restart
+          independently
+        </li>
+        <li>
+          <strong>1-hour aggregation window</strong> &mdash; balance between
+          signal and noise
+        </li>
+      </ul>
 
       <h3>Why This Matters</h3>
       <p>
