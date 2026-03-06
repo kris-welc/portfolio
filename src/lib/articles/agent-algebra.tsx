@@ -10,7 +10,7 @@ import { BeliefPropagation } from "@/components/diagrams/belief-propagation";
 export function AgentAlgebraContent() {
   return (
     <>
-      <h2>Why This Matters</h2>
+      <h2>The Problem This Solves</h2>
       <p>
         You&rsquo;ve probably built something like this: an LLM generates a
         draft, a second LLM reviews it, and if the review fails, you retry.
@@ -18,16 +18,17 @@ export function AgentAlgebraContent() {
         you&rsquo;re running multiple agents that vote on an answer.
       </p>
       <p>
-        Here&rsquo;s the uncomfortable question: <strong>how do you know it
-        gets better over time?</strong> How do you know the retry loop
-        converges instead of oscillating? How do you know your voting system
-        doesn&rsquo;t amplify the worst agent&rsquo;s mistakes? How do you know
-        your confidence scores mean anything?
+        Now the uncomfortable question: <strong>how do you know it actually
+        gets better over time?</strong> How do you know the retry loop converges
+        instead of oscillating? How do you know your voting system doesn&rsquo;t
+        amplify the worst agent&rsquo;s mistakes? How do you know your confidence
+        scores mean anything?
       </p>
       <p>
-        You don&rsquo;t. Because the current approach to multi-agent systems
-        is plumbing — connect things, run them, hope for the best. There is no
-        formal theory telling you what to expect from the connections you make.
+        You don&rsquo;t. Because the current approach to multi-agent systems is
+        plumbing &mdash; connect things, run them, hope for the best. There is
+        no formal theory telling you what to expect from the connections you make.
+        This article gives you that theory.
       </p>
       <blockquote>
         <p>
@@ -36,15 +37,14 @@ export function AgentAlgebraContent() {
         </p>
       </blockquote>
       <p>
-        Agent Algebra fills that gap. Six mathematical theorems, each mapped to
-        a composable Python primitive. Each primitive comes with a specific,
-        provable guarantee about what it will do to your system&rsquo;s behavior.
+        Six mathematical theorems, each mapped to a composable Python primitive
+        you can install and use today. Each comes with a specific, provable
+        guarantee about what it will do to your system&rsquo;s behavior.
       </p>
 
-      <h2>Where This Applies</h2>
+      <h2>Who Should Read This</h2>
       <p>
-        The six primitives apply anywhere you compose multiple AI agents or
-        decision-making components:
+        If you&rsquo;re building any of these, the six primitives apply directly:
       </p>
       <ul>
         <li>
@@ -123,7 +123,7 @@ export function AgentAlgebraContent() {
 
       <hr />
 
-      <h2>1. Contraction Mapping — &ldquo;Will my loop converge?&rdquo;</h2>
+      <h2>1. Will My Loop Converge?</h2>
 
       <h3>The Problem</h3>
       <p>
@@ -201,7 +201,7 @@ result = contraction_loop(
 
       <hr />
 
-      <h2>2. AdaBoost Cascade — &ldquo;My agents are mediocre individually&rdquo;</h2>
+      <h2>2. My Agents Are Mediocre Individually</h2>
 
       <h3>The Problem</h3>
       <p>
@@ -271,7 +271,7 @@ prediction = ensemble.predict(new_input)
 
       <hr />
 
-      <h2>3. Proper Scoring Rules — &ldquo;Which agent should I trust?&rdquo;</h2>
+      <h2>3. Which Agent Should I Trust?</h2>
 
       <h3>The Problem</h3>
       <p>
@@ -342,31 +342,31 @@ combined = tracker.aggregate({"gpt4": 0.75, "claude": 0.60})
 
       <hr />
 
-      <h2>4. Ergodicity-Corrected Kelly — &ldquo;How much should I bet?&rdquo;</h2>
+      <h2>4. How Much Should I Commit?</h2>
 
       <h3>The Problem</h3>
       <p>
         You have a resource allocation problem. You know the expected payoff
-        and the risk. The textbook answer (Kelly criterion) says to bet a
-        certain fraction of your bankroll. But the textbook assumes every bet
-        is independent. In reality, bad outcomes cluster — a bad streak isn&rsquo;t
-        just bad luck, it often means conditions have changed.
+        and the risk. The textbook answer says to commit a certain fraction of
+        your resources. But the textbook assumes every decision is independent.
+        In reality, bad outcomes cluster &mdash; a bad streak isn&rsquo;t just
+        bad luck, it often means conditions have changed.
       </p>
       <p>
         The deeper issue: <strong>the average across all possible outcomes is
-        not the same as your actual experience over time</strong>. On average
-        across 1,000 parallel universes, Kelly sizing works great. But you
-        don&rsquo;t live in 1,000 universes. You live in one. The one where
-        a bad streak can wipe you out before the law of large numbers kicks in.
+        not the same as your actual experience over time</strong>. Across 1,000
+        parallel universes, the textbook sizing works great. But you live in
+        one universe. The one where a bad streak can exhaust your resources
+        before the law of large numbers kicks in.
       </p>
 
       <h3>The Guarantee</h3>
       <p>
         The ergodic correction computes the ratio of{" "}
-        <strong>median</strong> terminal wealth to <strong>mean</strong> terminal
-        wealth via Monte Carlo simulation. If the median is 72% of the mean,
+        <strong>median</strong> terminal outcome to <strong>mean</strong> terminal
+        outcome via Monte Carlo simulation. If the median is 72% of the mean,
         your real-world experience is 28% worse than the textbook predicts. The
-        correction shrinks your bet size accordingly.
+        correction shrinks your commitment size accordingly.
       </p>
 
       <h3>The Code</h3>
@@ -375,40 +375,40 @@ combined = tracker.aggregate({"gpt4": 0.75, "claude": 0.60})
 result = ergodic_kelly(
     win_rate=0.60,
     win_loss_ratio=1.5,
-    returns=historical_returns,  # needed to measure serial correlation
+    returns=historical_outcomes,  # needed to measure serial correlation
     n_paths=1000,
 )
 
-# result.kelly_fraction = 0.267    (textbook says bet 26.7%)
-# result.ergodic_fraction = 0.192  (real-world safe bet is 19.2%)
+# result.kelly_fraction = 0.267    (textbook says commit 26.7%)
+# result.ergodic_fraction = 0.192  (real-world safe is 19.2%)
 # result.correction_factor = 0.72  (your path is 72% of the average)`}</code></pre>
 
       <h3>Where You&rsquo;d Use This</h3>
       <ul>
         <li>
-          <strong>API budget allocation</strong> — how much of your LLM budget
-          to allocate to expensive models vs cheap ones, accounting for
-          cost variance clustering.
+          <strong>API budget allocation</strong> &mdash; how much of your LLM budget
+          to allocate to expensive models vs cheap ones, accounting for cost
+          variance clustering.
         </li>
         <li>
-          <strong>Feature rollout</strong> — how aggressively to roll out a
+          <strong>Feature rollout</strong> &mdash; how aggressively to roll out a
           feature when early metrics have serial correlation (users who see bugs
           early leave, making subsequent metrics look worse).
         </li>
         <li>
-          <strong>Infrastructure scaling</strong> — how much spare capacity to
+          <strong>Infrastructure scaling</strong> &mdash; how much spare capacity to
           keep, accounting for correlated demand spikes.
         </li>
         <li>
-          <strong>Compute budget allocation</strong> — distributing GPU time
-          across concurrent workloads. Standard Kelly says 26.7%, but the
-          ergodic correction says 19.2% given real-world failure clustering.
+          <strong>Compute budget allocation</strong> &mdash; distributing GPU time
+          across concurrent workloads. Textbook says 26.7%, but the ergodic
+          correction says 19.2% given real-world failure clustering.
         </li>
       </ul>
 
       <hr />
 
-      <h2>5. Belief Propagation — &ldquo;My sources disagree&rdquo;</h2>
+      <h2>5. My Sources Disagree</h2>
 
       <h3>The Problem</h3>
       <p>
@@ -488,7 +488,7 @@ result = propagate(graph, damping=0.3)
 
       <hr />
 
-      <h2>6. MDL Compression — &ldquo;Is this signal or noise?&rdquo;</h2>
+      <h2>6. Is This Signal or Noise?</h2>
 
       <h3>The Problem</h3>
       <p>

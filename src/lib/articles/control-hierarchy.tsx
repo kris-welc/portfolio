@@ -1,18 +1,24 @@
 export function ControlHierarchyContent() {
   return (
     <>
-      <h2>The Thesis</h2>
+      <h2>Why This Article Exists</h2>
       <p>
-        Most people interact with AI through a chat window. They type a question,
-        receive an answer, and move on. This is <strong>consumption</strong> &mdash;
-        the lowest level of engagement with intelligence systems. It is also the
-        level where you have zero control over what the system does, how it reasons,
-        or whether its output is correct.
+        If you use AI through a chat window &mdash; type a question, get an answer,
+        move on &mdash; you are a <strong>consumer</strong>. You have zero control
+        over what the system does, how it reasons, or whether its output is correct.
+        You are entirely dependent on someone else&rsquo;s system.
       </p>
       <p>
-        The people who will define the next decade are not the ones typing better
-        prompts. They are the ones building the systems that contain, direct, and
-        verify AI &mdash; the ones operating at the layers above the model.
+        This article is about moving out of that position. The people who will define
+        the next decade are not the ones typing better prompts. They are the ones
+        building the systems that contain, direct, and verify AI &mdash; pipelines,
+        memory layers, tool orchestration, and evaluation loops that turn a model
+        from an oracle you hope is right into a component you control.
+      </p>
+      <p>
+        If you&rsquo;re a developer, a product builder, or anyone who wants to use
+        AI as infrastructure rather than a magic 8-ball, these ten principles and
+        the hierarchy that follows will show you exactly where to focus.
       </p>
       <blockquote>
         <p>
@@ -27,22 +33,23 @@ export function ControlHierarchyContent() {
 
       <h3>1. Models Are Components, Not Authorities</h3>
       <p>
-        Language models produce probabilistic text conditioned on input. They do
-        not verify truth, maintain coherent world models, or guarantee internal
-        consistency. Their role is <strong>generation</strong>, not judgment.
+        Language models produce probabilistic text. They do not verify truth,
+        maintain coherent world models, or guarantee consistency. Their role is{" "}
+        <strong>generation</strong>, not judgment.
       </p>
       <p>
-        Operational rule: the model generates options. External systems verify,
-        filter, and select. Those verification layers are deterministic code,
-        search and retrieval, test suites, and rule engines. Authority must always
-        exist outside the model.
+        <strong>What to do:</strong> the model generates options. Your code
+        verifies, filters, and selects. Those verification layers are deterministic
+        code, search and retrieval, test suites, and rule engines. If you treat
+        the model as the final authority, you&rsquo;ve given up control to a
+        system that hallucinates by design.
       </p>
 
-      <h3>2. Operate AI as Systems, Not Prompts</h3>
+      <h3>2. Build Systems, Not Prompts</h3>
       <p>
-        Chat interfaces obscure the real architecture. Effective control requires
-        building structured pipelines where the model performs narrow cognitive
-        steps &mdash; not the entire workflow.
+        The chat interface makes you think the model is the system. It&rsquo;s not.
+        Effective control requires building structured pipelines where the model
+        performs narrow cognitive steps &mdash; not the entire workflow.
       </p>
       <pre><code>{`objective
   ↓ planner
@@ -304,10 +311,11 @@ export function ControlHierarchyContent() {
 
       <hr />
 
-      <h2>Seven High-Leverage Applications</h2>
+      <h2>Seven Things You Can Build Today</h2>
       <p>
-        Theory is interesting. Operating systems that generate value is what matters.
-        These are the patterns that compound.
+        Principles are interesting. Building systems that generate value is what
+        matters. These are the patterns that compound &mdash; each one is something
+        you can start this week.
       </p>
 
       <h3>1. Autonomous Research Systems</h3>
@@ -376,9 +384,10 @@ export function ControlHierarchyContent() {
 
       <hr />
 
-      <h2>The Market Structure Ahead</h2>
+      <h2>Where the Leverage Is (and Isn&rsquo;t)</h2>
       <p>
-        Where things are heading, based on current trajectories:
+        Understanding where things are heading helps you decide where to invest
+        your time:
       </p>
       <ul>
         <li>
@@ -404,10 +413,10 @@ export function ControlHierarchyContent() {
 
       <hr />
 
-      <h2>The Position to Build</h2>
+      <h2>What to Own (Your Action Plan)</h2>
       <p>
-        The three things that create durable advantage in a world where
-        intelligence is cheap:
+        Three things create durable advantage in a world where intelligence is
+        cheap. If you take nothing else from this article, build these:
       </p>
       <ol>
         <li>
@@ -429,14 +438,17 @@ export function ControlHierarchyContent() {
         </li>
       </ol>
       <p>
-        People controlled by AI consume answers, rely on interfaces, and trust
-        outputs without verification. People controlling AI design systems, run
-        evaluation loops, and integrate models into infrastructure.
+        The difference is simple. People controlled by AI consume answers, rely
+        on interfaces, and trust outputs without verification. People controlling
+        AI design systems, run evaluation loops, and integrate models into
+        infrastructure they own.
       </p>
       <blockquote>
         <p>
           The point is not to use AI better. The point is to build systems
-          that use AI &mdash; and then own those systems.
+          that use AI &mdash; and then own those systems. Start with one
+          pipeline, one memory layer, one evaluation loop. That&rsquo;s your
+          foothold above the chat window.
         </p>
       </blockquote>
     </>
