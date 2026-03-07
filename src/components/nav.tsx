@@ -5,8 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
-  { href: "contact", label: "CONTACT" },
+const SECTION_ITEMS = [
   { href: "articles", label: "DISPATCHES" },
 ] as const;
 
@@ -18,7 +17,7 @@ export function Nav() {
   useEffect(() => {
     if (!isHome) return;
 
-    const sections = NAV_ITEMS.map(({ href }) =>
+    const sections = SECTION_ITEMS.map(({ href }) =>
       document.getElementById(href)
     ).filter(Boolean) as Element[];
 
@@ -46,7 +45,7 @@ export function Nav() {
           KW://
         </Link>
         <div className="flex items-center gap-6 md:gap-8">
-          {NAV_ITEMS.map(({ href, label }) => (
+          {SECTION_ITEMS.map(({ href, label }) => (
             <Link
               key={href}
               href={`/#${href}`}
@@ -60,6 +59,17 @@ export function Nav() {
               {label}
             </Link>
           ))}
+          <Link
+            href="/contact"
+            className={cn(
+              "link-underline text-xs tracking-wide transition-colors md:text-sm",
+              pathname === "/contact"
+                ? "text-waste-amber"
+                : "text-waste-dim hover:text-waste-bone"
+            )}
+          >
+            CONTACT
+          </Link>
           <a
             href="https://github.com/kris-welc"
             target="_blank"

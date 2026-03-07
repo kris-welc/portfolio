@@ -63,13 +63,13 @@ export function ContactSection() {
     <section id="contact" className="relative px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <div ref={headerRef} className="reveal mb-12 text-center">
-          <SectionLabel code="SEC_05" label="COMMS" />
+          <SectionLabel code="SEC_05" label="SAY HI" />
           <h2 className="gradient-bone mb-4 font-display text-3xl font-bold tracking-wide md:text-4xl">
-            Establish Contact
+            Let&rsquo;s Talk
           </h2>
           <p className="mx-auto max-w-lg text-waste-sand">
-            Open to collaboration on AI systems, autonomous agents, and
-            infrastructure engineering. Messages go directly to my inbox.
+            Got a question, an idea, or just want to say hi? Drop me a message
+            — it goes straight to my inbox and I&rsquo;ll get back to you.
           </p>
         </div>
 

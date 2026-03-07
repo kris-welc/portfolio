@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
+import { Resend } from "resend";
 
 export const dynamic = "force-dynamic";
+
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? "";
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 interface ContactMessage {
   readonly name: string;
@@ -40,7 +46,20 @@ export async function POST(request: Request) {
       timestamp: new Date().toISOString(),
     };
 
-    await kv.lpush("contact:messages", JSON.stringify(entry));
+    // Store in KV and send email in parallel
+    const kvPromise = kv.lpush("contact:messages", JSON.stringify(entry));
+
+    let emailPromise: Promise<unknown> = Promise.resolve();
+    if (CONTACT_EMAIL && resend) {
+      emailPromise = resend.emails.send({
+        from: "Portfolio Contact <onboarding@resend.dev>",
+        to: CONTACT_EMAIL,
+        subject: `New message from ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\n\n${message}\n\n---\nSent at ${entry.timestamp}`,
+      });
+    }
+
+    await Promise.all([kvPromise, emailPromise]);
 
     return NextResponse.json(
       { success: true },
