@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { WastelandBadge } from "@/components/wasteland-badge";
 import { ArticleStatsBar } from "@/components/article-stats-bar";
 import type { Article } from "@/lib/data";
@@ -74,6 +75,19 @@ export function ArticleLayout({ article, children }: ArticleLayoutProps) {
             </div>
           )}
         </header>
+
+        {article.image && (
+          <div className="mb-12 overflow-hidden rounded-lg border border-waste-border">
+            <Image
+              src={article.image}
+              alt={article.imageAlt ?? ""}
+              width={1024}
+              height={321}
+              priority
+              className="h-auto w-full"
+            />
+          </div>
+        )}
 
         {/* Content */}
         <div className="article-prose">{children}</div>

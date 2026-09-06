@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -27,8 +28,17 @@ export function ArticleCard({
 
   return (
     <Card className="panel-hover group border-waste-border bg-waste-panel transition-all duration-300">
-      <CardHeader>
-        <div className="flex-1">
+      <CardHeader className="flex flex-row items-start gap-4">
+        {article.imageThumb && (
+          <Image
+            src={article.imageThumb}
+            alt={article.imageAlt ?? ""}
+            width={160}
+            height={160}
+            className="mt-0.5 h-16 w-16 shrink-0 rounded-md border border-waste-border object-cover"
+          />
+        )}
+        <div className="min-w-0 flex-1">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             {article.tags.map((tag) => (
               <WastelandBadge key={tag} variant={article.accent}>

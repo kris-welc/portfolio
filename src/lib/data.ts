@@ -26,6 +26,11 @@ export interface Article {
   readonly date?: string;
   readonly title: string;
   readonly hook: string;
+  /** Wide banner shown at the top of the article. */
+  readonly image?: string;
+  /** Square crop shown beside the title on the dispatch list. */
+  readonly imageThumb?: string;
+  readonly imageAlt?: string;
   readonly tags: readonly string[];
   readonly accent: "amber" | "toxic" | "rust" | "bone";
   readonly readTime: string;
@@ -116,6 +121,10 @@ export const ARTICLES: readonly Article[] = [
     slug: "astra-field-test",
     date: "2026-09-06",
     title: "A Frontier Model Made Better Calls and Found Zero Winners",
+    image: "/images/astra-field-test.jpg",
+    imageThumb: "/images/astra-field-test-thumb.jpg",
+    imageAlt:
+      "A spiral of blue and amber stars with the words UNDER TESTS glowing at its centre",
     hook: "I gave GPT-6 Astra the same work GPT-5.6 Terra already does for me \u2014 one bug fix, 300 review calls, 24 days of a full research loop \u2014 with frozen tests written before either model started. Judgment improved measurably. Outcomes did not move at all. Both results matter, and the second one is why I trust the first.",
     tags: ["Model Evaluation", "Agent Judgment", "Measured Results"],
     accent: "toxic",
