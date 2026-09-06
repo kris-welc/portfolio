@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArticleStatsContext,
+  type ArticleStats,
+  type ArticleStatsContextValue,
+} from "@/hooks/article-stats-context";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 const VIEWS_KEY = "article_views";
-
-interface ArticleStats {
-  readonly views: number;
-}
 
 function readSet(key: string): Set<string> {
   if (typeof window === "undefined") return new Set();
@@ -27,19 +28,22 @@ function writeSet(key: string, set: Set<string>): void {
   }
 }
 
-async function postView(slug: string): Promise<void> {
+async function postView(slug: string): Promise<number | null> {
   try {
-    await fetch(`${API_BASE}/api/stats`, {
+    const res = await fetch(`${API_BASE}/api/stats`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ slug, action: "view" }),
     });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { count?: number };
+    return typeof data.count === "number" ? data.count : null;
   } catch {
-    // silently degrade
+    return null;
   }
 }
 
-export function useArticleStats() {
+export function useArticleStatsState(): ArticleStatsContextValue {
   const [stats, setStats] = useState<Record<string, ArticleStats>>({});
   const fetched = useRef(false);
 
@@ -49,7 +53,16 @@ export function useArticleStats() {
 
     fetch(`${API_BASE}/api/stats`)
       .then((res) => res.json())
-      .then((data: Record<string, ArticleStats>) => setStats(data))
+      .then((data: Record<string, ArticleStats>) => {
+        setStats((prev) => {
+          const merged: Record<string, ArticleStats> = { ...data };
+          for (const [slug, local] of Object.entries(prev)) {
+            const remote = data[slug]?.views ?? 0;
+            merged[slug] = { views: Math.max(remote, local.views) };
+          }
+          return merged;
+        });
+      })
       .catch(() => {});
   }, []);
 
@@ -58,13 +71,19 @@ export function useArticleStats() {
     if (viewed.has(slug)) return;
     viewed.add(slug);
     writeSet(VIEWS_KEY, viewed);
-    postView(slug);
+
     setStats((prev) => ({
       ...prev,
-      [slug]: {
-        views: (prev[slug]?.views ?? 0) + 1,
-      },
+      [slug]: { views: (prev[slug]?.views ?? 0) + 1 },
     }));
+
+    void postView(slug).then((count) => {
+      if (count == null) return;
+      setStats((prev) => ({
+        ...prev,
+        [slug]: { views: Math.max(prev[slug]?.views ?? 0, count) },
+      }));
+    });
   }, []);
 
   const getStats = useCallback(
@@ -72,5 +91,16 @@ export function useArticleStats() {
     [stats],
   );
 
-  return { recordView, getStats } as const;
+  return useMemo(
+    () => ({ recordView, getStats }),
+    [recordView, getStats],
+  );
+}
+
+export function useArticleStats(): ArticleStatsContextValue {
+  const ctx = useContext(ArticleStatsContext);
+  if (!ctx) {
+    throw new Error("useArticleStats must be used within ArticleStatsProvider");
+  }
+  return ctx;
 }

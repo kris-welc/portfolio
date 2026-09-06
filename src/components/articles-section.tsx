@@ -11,7 +11,7 @@ export function ArticlesSection() {
   const { getStats } = useArticleStats();
 
   return (
-    <section id="articles" className="relative px-6 py-24" ref={containerRef}>
+    <section id="articles" className="relative px-6 pt-28 pb-24" ref={containerRef}>
       <div className="mx-auto max-w-6xl">
         <div className="reveal mb-12">
           <SectionLabel code="SEC_01" label="FIELD NOTES" />

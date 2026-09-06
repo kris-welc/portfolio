@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Chakra_Petch, Rajdhani, Share_Tech_Mono } from "next/font/google";
 import { Nav } from "@/components/nav";
 import { ErrorSuppressor } from "@/components/error-suppressor";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const chakraPetch = Chakra_Petch({
@@ -23,9 +24,8 @@ const shareTechMono = Share_Tech_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kris Welc",
-  description:
-    "Autonomous AI systems, algorithmic trading, and macro intelligence.",
+  title: "Dispatches",
+  description: "Technical articles.",
 };
 
 export default function RootLayout({
@@ -40,8 +40,10 @@ export default function RootLayout({
       >
         <ErrorSuppressor />
         <div className="wasteland-bg" aria-hidden="true" />
-        <Nav />
-        {children}
+        <Providers>
+          <Nav />
+          {children}
+        </Providers>
       </body>
     </html>
   );
