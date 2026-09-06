@@ -19,17 +19,11 @@ import { cn } from "@/lib/utils";
 interface ArticleCardProps {
   readonly article: Article;
   readonly views: number;
-  readonly stars: number;
-  readonly isStarred: boolean;
-  readonly onStar: () => void;
 }
 
 export function ArticleCard({
   article,
   views,
-  stars,
-  isStarred,
-  onStar,
 }: ArticleCardProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -70,23 +64,12 @@ export function ArticleCard({
                 })}
               </span>
             )}
-            <span className="flex items-center gap-2.5 font-mono text-[0.6rem] text-waste-ash">
-              <span className="flex items-center gap-1">
-                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {views}
-              </span>
-              <span className={cn(
-                "flex items-center gap-1",
-                stars > 0 ? "text-waste-amber/70" : ""
-              )}>
-                <svg className="h-2.5 w-2.5 fill-current" viewBox="0 0 24 24">
-                  <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.771l-7.416 3.642 1.48-8.279L0 9.306l8.332-1.151z" />
-                </svg>
-                {stars}
-              </span>
+            <span className="flex items-center gap-1 font-mono text-[0.6rem] text-waste-ash">
+              <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              {views}
             </span>
           </div>
         </div>
@@ -154,26 +137,6 @@ export function ArticleCard({
             />
           </svg>
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onStar}
-          className={cn(
-            "font-mono text-xs tracking-wider transition-colors",
-            isStarred
-              ? "text-waste-amber"
-              : "text-waste-dim hover:text-waste-amber"
-          )}
-        >
-            <svg
-              className={cn("mr-1 h-3 w-3", isStarred ? "fill-current" : "fill-none stroke-current")}
-              viewBox="0 0 24 24"
-              strokeWidth={isStarred ? 0 : 2}
-            >
-              <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.771l-7.416 3.642 1.48-8.279L0 9.306l8.332-1.151z" />
-            </svg>
-            {isStarred ? "STARRED" : "STAR"}
-          </Button>
         {article.repoUrl && (
           <a
             href={article.repoUrl}

@@ -7,8 +7,10 @@ import { ControlHierarchyContent } from "@/lib/articles/control-hierarchy";
 import { AgentAlgebraContent } from "@/lib/articles/agent-algebra";
 import { DualLayerRegimeContent } from "@/lib/articles/dual-layer-regime";
 import { VpinConvictionContent } from "@/lib/articles/vpin-conviction";
+import { ProductionAgentsContent } from "@/lib/articles/production-agents";
 
 const CONTENT_MAP: Record<string, React.ComponentType> = {
+  "production-agents": ProductionAgentsContent,
   "control-hierarchy": ControlHierarchyContent,
   "agent-algebra": AgentAlgebraContent,
   "dual-layer-regime": DualLayerRegimeContent,

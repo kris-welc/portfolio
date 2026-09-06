@@ -1,16 +1,14 @@
 "use client";
 
 import { useArticleStats } from "@/hooks/use-article-stats";
-import { cn } from "@/lib/utils";
 
 interface ArticleStatsBarProps {
   readonly slug: string;
 }
 
 export function ArticleStatsBar({ slug }: ArticleStatsBarProps) {
-  const { getStats, toggleStar, isStarred } = useArticleStats();
-  const { views, stars } = getStats(slug);
-  const starred = isStarred(slug);
+  const { getStats } = useArticleStats();
+  const { views } = getStats(slug);
 
   return (
     <div className="flex items-center gap-4 font-mono text-xs text-waste-ash">
@@ -21,24 +19,6 @@ export function ArticleStatsBar({ slug }: ArticleStatsBarProps) {
         </svg>
         {views} {views === 1 ? "view" : "views"}
       </span>
-      <button
-        onClick={() => toggleStar(slug)}
-        className={cn(
-          "flex items-center gap-1.5 transition-colors",
-          starred
-            ? "text-waste-amber"
-            : "text-waste-ash hover:text-waste-amber"
-        )}
-      >
-        <svg
-          className={cn("h-3.5 w-3.5", starred ? "fill-current" : "fill-none stroke-current")}
-          viewBox="0 0 24 24"
-          strokeWidth={starred ? 0 : 1.5}
-        >
-          <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.771l-7.416 3.642 1.48-8.279L0 9.306l8.332-1.151z" />
-        </svg>
-        {stars} {stars === 1 ? "star" : "stars"}
-      </button>
     </div>
   );
 }

@@ -10,6 +10,11 @@ import { BeliefPropagation } from "@/components/diagrams/belief-propagation";
 export function AgentAlgebraContent() {
   return (
     <>
+      <p>
+        <strong>In one sentence:</strong> six small building blocks that make
+        multi-agent systems behave predictably instead of hopefully.
+      </p>
+
       <h2>The Problem This Solves</h2>
       <p>
         You&rsquo;ve probably built something like this: an LLM generates a
@@ -19,138 +24,118 @@ export function AgentAlgebraContent() {
       </p>
       <p>
         Now the uncomfortable question: <strong>how do you know it actually
-        gets better over time?</strong> How do you know the retry loop converges
+        gets better over time?</strong> How do you know the retry loop settles
         instead of oscillating? How do you know your voting system doesn&rsquo;t
         amplify the worst agent&rsquo;s mistakes? How do you know your confidence
         scores mean anything?
       </p>
       <p>
-        You don&rsquo;t. Because the current approach to multi-agent systems is
-        plumbing &mdash; connect things, run them, hope for the best. There is
-        no formal theory telling you what to expect from the connections you make.
-        This article gives you that theory.
+        Most systems answer that with plumbing &mdash; connect things, run them,
+        hope. This article gives you six primitives with a specific guarantee
+        each. You can install them as pure Python (standard library only) today.
       </p>
-      <blockquote>
-        <p>
-          The difference between hoping your system improves and proving it does
-          is what separates engineering from tinkering.
-        </p>
-      </blockquote>
+
+      <h2>A Concrete Story First</h2>
       <p>
-        Six mathematical theorems, each mapped to a composable Python primitive
-        you can install and use today. Each comes with a specific, provable
-        guarantee about what it will do to your system&rsquo;s behavior.
+        Suppose you have a retry loop that runs five times and picks the best
+        draft. Iteration 3 scored well. Iteration 5 scored worse. You shipped
+        iteration 5 because &ldquo;more tries = better.&rdquo; That isn&rsquo;t
+        improvement &mdash; it&rsquo;s random search with extra latency.
+      </p>
+      <p>
+        Primitive 1 fixes that: each update must move <em>partway</em> toward
+        measured reality, not jump around. After a few rounds the loop stops
+        because movement got tiny. You can prove it settled. The other five
+        primitives answer the next questions the same way: mediocre agents,
+        trust, budget, disagreement, and noise.
       </p>
 
       <h2>Who Should Read This</h2>
-      <p>
-        If you&rsquo;re building any of these, the six primitives apply directly:
-      </p>
       <ul>
         <li>
           <strong>LLM pipelines</strong> — retry loops, multi-model voting,
-          chain-of-thought refinement, RAG quality scoring
+          refinement, RAG quality scoring
         </li>
         <li>
-          <strong>Recommendation systems</strong> — combining multiple scoring
-          models with calibration-tracked weights
+          <strong>Recommendation / moderation</strong> — combining scorers,
+          cascading classifiers
         </li>
         <li>
-          <strong>Content moderation</strong> — cascading classifiers where each
-          focuses on what the previous one missed
+          <strong>Autonomous agents</strong> — calibration, routing, resource
+          limits
         </li>
         <li>
-          <strong>Autonomous agents</strong> — self-calibrating parameters,
-          resource allocation, confidence-based routing
-        </li>
-        <li>
-          <strong>Forecasting</strong> — combining expert predictions with
-          proper scoring rules, filtering noise from signal
-        </li>
-        <li>
-          <strong>Resource allocation</strong> — budget sizing, capacity
-          planning, and risk-aware distribution across competing priorities
+          <strong>Forecasting</strong> — combining expert probabilities without
+          letting overconfidence win
         </li>
       </ul>
 
-      <h2>The Framework: Six Theorems, Six Primitives</h2>
+      <h2>Six Questions, Six Guarantees</h2>
       <table>
         <thead>
           <tr>
-            <th>Theorem</th>
+            <th>Question</th>
             <th>Plain English</th>
             <th>Guarantee</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Banach Fixed-Point</td>
-            <td>Your feedback loop will settle down, not oscillate</td>
-            <td>Convergence in O(log(1/&epsilon;)) iterations</td>
+            <td>Will my loop settle?</td>
+            <td>Each step moves partway toward the answer</td>
+            <td>Settles in a predictable number of iterations</td>
           </tr>
           <tr>
-            <td>Schapire AdaBoost</td>
-            <td>Mediocre agents become excellent together</td>
-            <td>Exponential error reduction</td>
+            <td>Agents are mediocre alone</td>
+            <td>Each later agent focuses on earlier misses</td>
+            <td>Combined error drops fast</td>
           </tr>
           <tr>
-            <td>de Finetti Scoring</td>
-            <td>The best-calibrated agent gets the most influence</td>
-            <td>Honesty is the dominant strategy</td>
+            <td>Which agent should I trust?</td>
+            <td>Reward honest probabilities, not swagger</td>
+            <td>Best-calibrated agent gets the most weight</td>
           </tr>
           <tr>
-            <td>Ole Peters Ergodicity</td>
-            <td>Don&rsquo;t bet so big you can&rsquo;t survive a bad streak</td>
-            <td>Path-dependent survival</td>
+            <td>How much should I commit?</td>
+            <td>Size for surviving a bad streak, not the average universe</td>
+            <td>Safer commitment size under clustered failures</td>
           </tr>
           <tr>
-            <td>Pearl Belief Propagation</td>
-            <td>Local conversations produce global consensus</td>
-            <td>Globally optimal from local messages</td>
+            <td>My sources disagree</td>
+            <td>Neighbors share beliefs until the network agrees</td>
+            <td>Global consensus from local messages</td>
           </tr>
           <tr>
-            <td>Kolmogorov MDL</td>
-            <td>If you can compress it, it&rsquo;s real. If not, it&rsquo;s noise.</td>
-            <td>Principled signal/noise separation</td>
+            <td>Signal or noise?</td>
+            <td>If it compresses, it&rsquo;s structure; if not, it&rsquo;s noise</td>
+            <td>Principled filter without domain rules</td>
           </tr>
         </tbody>
       </table>
-
       <p>
-        Zero external dependencies. Pure Python standard library. All types are
-        frozen dataclasses — immutable, composable, testable.
+        (Under the hood these map to classic results &mdash; fixed-point
+        contraction, boosting, proper scoring, path-dependent survival, belief
+        propagation, minimum description length. You don&rsquo;t need the names
+        to use the primitives.)
       </p>
 
       <hr />
 
-      <h2>1. Will My Loop Converge?</h2>
+      <h2>1. Will My Loop Settle?</h2>
 
       <h3>The Problem</h3>
       <p>
-        You have a feedback loop. An agent generates output, you evaluate it,
-        feed the evaluation back, the agent tries again. This is every
-        &ldquo;self-improving&rdquo; system ever built — from LLM retry loops to
-        hyperparameter tuning to prompt optimization.
-      </p>
-      <p>
-        The question nobody asks: <strong>will it converge?</strong> Or will
-        iteration 5 be worse than iteration 3? Most retry loops have no answer.
-        They run for N iterations and take the best one. That&rsquo;s not
-        convergence — that&rsquo;s random search.
+        Feedback loops are everywhere: generate, evaluate, feed back, try again.
+        Most retry loops run for N iterations and take the best one. That&rsquo;s
+        not settling &mdash; that&rsquo;s random search.
       </p>
 
       <h3>The Guarantee</h3>
       <p>
-        A contraction mapping has one rule: each step must get closer to the
-        answer by a fixed fraction. If your update function satisfies{" "}
-        <code>k &lt; 1</code> (it moves less than 100% of the distance each
-        time), convergence is <em>mathematically guaranteed</em>. Not probably.
-        Not usually. Guaranteed.
-      </p>
-      <p>
-        Think of it like this: if you always walk halfway to your destination,
-        you&rsquo;ll never overshoot, and you&rsquo;ll get arbitrarily close.
-        That&rsquo;s <code>k = 0.5</code>.
+        Make each update move <strong>less than the full distance</strong> toward
+        the measured result. If you always walk halfway to the destination, you
+        never overshoot, and you get arbitrarily close. That simple rule is
+        enough for mathematical convergence.
       </p>
 
       <ContractionConvergence />
@@ -158,44 +143,34 @@ export function AgentAlgebraContent() {
       <h3>The Code</h3>
       <pre><code>{`from agent_algebra import contraction_step, contraction_loop
 
-# One step: blend current estimates toward observed reality
 # k=0.5 means "move halfway toward the truth each iteration"
 new_params, distance = contraction_step(
     current={"accuracy": 0.50, "threshold": 0.60},
     realized={"accuracy": 0.72, "threshold": 0.55},
     k=0.5,
 )
-# distance tells you how far you moved — when it's < tolerance, you're done
 
-# Full loop: keep iterating until convergence
 result = contraction_loop(
     generate=run_evaluation,  # your function: params -> measured results
     initial={"accuracy": 0.50},
     k=0.5,
     tol=1e-3,  # stop when movement is this small
 )
-# result.converged = True
-# result.iteration = 4  (typically 3-5 iterations)`}</code></pre>
+# result.converged = True after typically 3-5 iterations`}</code></pre>
 
       <h3>Where You&rsquo;d Use This</h3>
       <ul>
         <li>
-          <strong>Prompt optimization</strong> — tune prompt parameters, measure
-          output quality, feed back. Converges to optimal prompts instead of
-          random-searching.
+          <strong>Prompt optimization</strong> — tune, measure, feed back until
+          movement is tiny.
         </li>
         <li>
-          <strong>Model calibration</strong> — adjust confidence thresholds based
-          on observed accuracy. Each round gets closer to true calibration.
+          <strong>Model calibration</strong> — adjust thresholds toward observed
+          accuracy.
         </li>
         <li>
-          <strong>A/B test parameter tuning</strong> — converge on optimal split
-          ratios rather than grid-searching.
-        </li>
-        <li>
-          <strong>Agent self-calibration</strong> — an ensemble system starts
-          with estimated accuracy priors, runs evaluation rounds, and converges
-          to true accuracy in 4 iterations.
+          <strong>Agent self-calibration</strong> — start with rough priors,
+          converge to measured accuracy.
         </li>
       </ul>
 
@@ -205,25 +180,16 @@ result = contraction_loop(
 
       <h3>The Problem</h3>
       <p>
-        You have multiple models or agents. None of them is great on its own —
-        maybe 55-65% accuracy each. You average their outputs and get... roughly
-        the same accuracy. Averaging doesn&rsquo;t help much because all agents
-        tend to be wrong on the same hard cases.
+        Several models at 55&ndash;65% accuracy. Averaging them barely helps
+        because they fail on the same hard cases.
       </p>
 
       <h3>The Guarantee</h3>
       <p>
-        Boosting solves this by making each successive agent <strong>focus on
-        what the previous agents got wrong</strong>. Agent 1 makes predictions.
-        Cases it got wrong get upweighted. Agent 2 trains on the reweighted data,
-        so it specializes in Agent 1&rsquo;s failures. Agent 3 specializes in
-        what both missed. The combined error drops <em>exponentially</em> with
-        each round.
-      </p>
-      <p>
-        The math guarantees that any collection of agents that are each slightly
-        better than random (&gt;50%) can be combined into an arbitrarily accurate
-        ensemble.
+        Make each successive agent <strong>focus on what the previous ones got
+        wrong</strong>. Agent 1 predicts. Its misses get more weight. Agent 2
+        specializes there. Agent 3 covers what both missed. Combined error drops
+        fast &mdash; as long as each agent is a bit better than a coin flip.
       </p>
 
       <AdaBoostCascade />
@@ -238,34 +204,22 @@ ensemble = boost_cascade(
     rounds=3,
 )
 
-# The ensemble automatically weights each agent by its accuracy
-# and focuses later agents on earlier agents' failures
 prediction = ensemble.predict(new_input)
-
-# ensemble.rounds shows what happened:
-# Round 1: content_filter, error=0.35, weight=0.62
-# Round 2: toxicity_model, error=0.22, weight=1.27 (focused on misses)
-# Round 3: context_checker, error=0.08, weight=2.44 (specialist)`}</code></pre>
+# Later agents automatically specialize on earlier misses`}</code></pre>
 
       <h3>Where You&rsquo;d Use This</h3>
       <ul>
         <li>
-          <strong>Content moderation</strong> — general filter catches obvious
-          cases, toxicity model catches subtle abuse, context model catches
-          edge cases that need understanding.
+          <strong>Content moderation</strong> — general filter → toxicity →
+          context edge cases.
         </li>
         <li>
-          <strong>Multi-LLM pipelines</strong> — cheap model handles easy
-          requests, expensive model handles what the cheap one failed.
+          <strong>Multi-LLM pipelines</strong> — cheap model first; expensive
+          model only on failures.
         </li>
         <li>
-          <strong>Code review agents</strong> — linter catches syntax, style
-          checker catches patterns, security scanner catches what both missed.
-        </li>
-        <li>
-          <strong>Anomaly detection</strong> — individual detectors (statistical,
-          rule-based, ML-based) are mediocre alone but strong together when
-          each specializes in what the others miss.
+          <strong>Code review agents</strong> — lint → style → security, each on
+          prior misses.
         </li>
       </ul>
 
@@ -275,68 +229,45 @@ prediction = ensemble.predict(new_input)
 
       <h3>The Problem</h3>
       <p>
-        You have multiple agents giving probability estimates. One says 80%
-        confidence, another says 60%. Which one should you weight more? The
-        obvious answer — &ldquo;the one with higher accuracy&rdquo; — is wrong.
-        An agent that says 90% on everything and is right 70% of the time has
-        good accuracy but terrible <em>calibration</em>. When it says 90%, it
-        should be right 90% of the time, not 70%.
+        One agent says 80%, another says 60%. Higher accuracy is the wrong
+        answer. An agent that says 90% on everything and is right 70% of the time
+        has terrible <em>calibration</em>. When it says 90%, it should be right
+        90% of the time.
       </p>
 
       <h3>The Guarantee</h3>
       <p>
-        A <strong>proper scoring rule</strong> is a mathematical function where
-        the only way to maximize your score is to report your <em>true</em>{" "}
-        belief. No gaming, no sandbagging, no overconfidence. The Brier score
-        and log score are both proper. An agent that tries to inflate its
-        confidence will score worse, not better.
-      </p>
-      <p>
-        This means you can use each agent&rsquo;s historical score as a trust
-        weight — and it&rsquo;s <em>incentive-compatible</em>. The system
-        automatically gives the most influence to the best-calibrated agent.
+        Score agents so the only way to maximize the score is to report true
+        belief &mdash; no swagger, no sandbagging. Historical score becomes the
+        trust weight. The best-calibrated agent automatically gets the most say.
       </p>
 
       <h3>The Code</h3>
       <pre><code>{`from agent_algebra import ScoringTracker, Prediction, Outcome
 
 tracker = ScoringTracker()
-
-# Record predictions and what actually happened
 tracker.record("gpt4", Prediction(0.85), Outcome(True))
 tracker.record("gpt4", Prediction(0.30), Outcome(False))
 tracker.record("claude", Prediction(0.70), Outcome(True))
-tracker.record("claude", Prediction(0.90), Outcome(False))  # overconfident!
+tracker.record("claude", Prediction(0.90), Outcome(False))  # overconfident
 
-# Claude said 90% but was wrong — its Brier score takes a hit
 board = tracker.leaderboard()
-# gpt4:   Brier=0.0450, weight=0.69  (well-calibrated)
-# claude:  Brier=0.3050, weight=0.31  (overconfident, penalized)
-
-# Aggregate using calibration weights — gpt4 gets more say
-combined = tracker.aggregate({"gpt4": 0.75, "claude": 0.60})
-# combined ≈ 0.70  (closer to gpt4's estimate)`}</code></pre>
+# gpt4 gets higher weight; claude is penalized for overconfidence
+combined = tracker.aggregate({"gpt4": 0.75, "claude": 0.60})`}</code></pre>
 
       <h3>Where You&rsquo;d Use This</h3>
       <ul>
         <li>
-          <strong>Multi-model routing</strong> — don&rsquo;t just pick the
-          cheapest model that can handle the task. Weight models by their
-          calibration track record.
+          <strong>Multi-model routing</strong> — weight by calibration track
+          record, not just cost.
         </li>
         <li>
-          <strong>Expert prediction aggregation</strong> — when multiple
-          forecasters give probability estimates, weight by historical
-          calibration.
+          <strong>Expert forecasts</strong> — combine probabilities by historical
+          honesty.
         </li>
         <li>
-          <strong>RAG confidence scoring</strong> — track which retrieval
-          strategies are well-calibrated and weight accordingly.
-        </li>
-        <li>
-          <strong>Multi-agent orchestration</strong> — 4 specialized agents
-          are automatically weighted by Brier score. A poorly calibrated
-          agent gets downweighted without manual intervention.
+          <strong>RAG confidence</strong> — track which retrieval strategies are
+          well-calibrated.
         </li>
       </ul>
 
@@ -346,27 +277,24 @@ combined = tracker.aggregate({"gpt4": 0.75, "claude": 0.60})
 
       <h3>The Problem</h3>
       <p>
-        You have a resource allocation problem. You know the expected payoff
-        and the risk. The textbook answer says to commit a certain fraction of
-        your resources. But the textbook assumes every decision is independent.
-        In reality, bad outcomes cluster &mdash; a bad streak isn&rsquo;t just
-        bad luck, it often means conditions have changed.
+        You have a budget (API spend, rollout percentage, spare capacity). The
+        textbook says commit a certain fraction based on expected payoff. That
+        math assumes bad outcomes are independent. In reality, failures cluster
+        &mdash; a bad week often means conditions changed, not that luck will
+        reverse tomorrow.
       </p>
       <p>
-        The deeper issue: <strong>the average across all possible outcomes is
-        not the same as your actual experience over time</strong>. Across 1,000
-        parallel universes, the textbook sizing works great. But you live in
-        one universe. The one where a bad streak can exhaust your resources
-        before the law of large numbers kicks in.
+        You live in one timeline. A bad streak can exhaust the budget before
+        &ldquo;on average it works out&rdquo; ever shows up.
       </p>
 
       <h3>The Guarantee</h3>
       <p>
-        The ergodic correction computes the ratio of{" "}
-        <strong>median</strong> terminal outcome to <strong>mean</strong> terminal
-        outcome via Monte Carlo simulation. If the median is 72% of the mean,
-        your real-world experience is 28% worse than the textbook predicts. The
-        correction shrinks your commitment size accordingly.
+        Simulate many paths with realistic clustering. Compare the
+        <strong>typical</strong> (median) ending to the <strong>average</strong>
+        ending. If the typical path is only 72% as good as the average, shrink
+        your commitment by that factor. You size for survival, not for the
+        fantasy average universe.
       </p>
 
       <h3>The Code</h3>
@@ -375,34 +303,27 @@ combined = tracker.aggregate({"gpt4": 0.75, "claude": 0.60})
 result = ergodic_kelly(
     win_rate=0.60,
     win_loss_ratio=1.5,
-    returns=historical_outcomes,  # needed to measure serial correlation
+    returns=historical_outcomes,  # to measure how failures cluster
     n_paths=1000,
 )
 
-# result.kelly_fraction = 0.267    (textbook says commit 26.7%)
-# result.ergodic_fraction = 0.192  (real-world safe is 19.2%)
-# result.correction_factor = 0.72  (your path is 72% of the average)`}</code></pre>
+# textbook_fraction = 0.267   (commit 26.7% of budget)
+# safe_fraction     = 0.192   (commit 19.2% after survival correction)
+# correction_factor = 0.72    (typical path is 72% of the average)`}</code></pre>
 
       <h3>Where You&rsquo;d Use This</h3>
       <ul>
         <li>
-          <strong>API budget allocation</strong> &mdash; how much of your LLM budget
-          to allocate to expensive models vs cheap ones, accounting for cost
-          variance clustering.
+          <strong>API budget</strong> — how much spend on expensive models vs
+          cheap ones when cost spikes cluster.
         </li>
         <li>
-          <strong>Feature rollout</strong> &mdash; how aggressively to roll out a
-          feature when early metrics have serial correlation (users who see bugs
-          early leave, making subsequent metrics look worse).
+          <strong>Feature rollout</strong> — how aggressive when early bugs cause
+          correlated churn.
         </li>
         <li>
-          <strong>Infrastructure scaling</strong> &mdash; how much spare capacity to
-          keep, accounting for correlated demand spikes.
-        </li>
-        <li>
-          <strong>Compute budget allocation</strong> &mdash; distributing GPU time
-          across concurrent workloads. Textbook says 26.7%, but the ergodic
-          correction says 19.2% given real-world failure clustering.
+          <strong>Spare capacity</strong> — how much headroom when demand spikes
+          arrive together.
         </li>
       </ul>
 
@@ -412,22 +333,15 @@ result = ergodic_kelly(
 
       <h3>The Problem</h3>
       <p>
-        You have multiple information sources that each have a local view. Source
-        A says 75% likely. Source B says 40% likely. Source C says 60% likely.
-        You could average them (58.3%), but that ignores their
-        relationships. A is upstream of B — if A is right, B&rsquo;s estimate should
-        shift. C depends on both A and B. Simple averaging throws away the
-        structure of how these sources relate to each other.
+        Source A says 75%. B says 40%. C says 60%. Averaging to 58% ignores that
+        A feeds B, and C depends on both. Structure matters.
       </p>
 
       <h3>The Guarantee</h3>
       <p>
-        Belief propagation models the sources as a graph where each node only
-        talks to its neighbors. Through iterative message passing — each node
-        sends its belief to its neighbors, each neighbor updates — the network
-        converges to <strong>globally optimal posteriors</strong>. Every node
-        ends up with a belief that accounts for all information in the network,
-        even from nodes it never directly communicated with.
+        Model sources as a graph. Each node only talks to neighbors. After a few
+        rounds of message passing, every node holds a belief that accounts for
+        the whole network &mdash; including nodes it never spoke to directly.
       </p>
 
       <BeliefPropagation />
@@ -435,7 +349,6 @@ result = ergodic_kelly(
       <h3>The Code</h3>
       <pre><code>{`from agent_algebra import BeliefNode, build_graph, propagate
 
-# Define agents and their local probability estimates
 agents = [
     BeliefNode("user_intent", local_prob=0.60),
     BeliefNode("context_relevance", local_prob=0.75),
@@ -443,46 +356,29 @@ agents = [
     BeliefNode("factuality", local_prob=0.40),
 ]
 
-# Define which agents influence each other
 edges = [
-    ("user_intent", "context_relevance"),  # intent informs relevance
-    ("user_intent", "sentiment"),           # intent informs tone
-    ("context_relevance", "sentiment"),     # relevant context affects sentiment
-    ("sentiment", "factuality"),            # emotional content affects factual rigor
+    ("user_intent", "context_relevance"),
+    ("user_intent", "sentiment"),
+    ("context_relevance", "sentiment"),
+    ("sentiment", "factuality"),
 ]
 
-graph = build_graph(agents, edges)
-result = propagate(graph, damping=0.3)
-
-# result.converged = True in 8 iterations
-# result.beliefs:
-#   user_intent: 0.5812       (pulled down by low factuality)
-#   context_relevance: 0.6634 (pulled up by intent + its own strength)
-#   sentiment: 0.5421         (influenced by both neighbors)
-#   factuality: 0.4518        (slightly pulled up by network)`}</code></pre>
+result = propagate(build_graph(agents, edges), damping=0.3)
+# Each belief now reflects the whole network, not just its local view`}</code></pre>
 
       <h3>Where You&rsquo;d Use This</h3>
       <ul>
         <li>
-          <strong>RAG quality scoring</strong> — retrieval relevance, semantic
-          similarity, source authority, and freshness as a belief graph. Relevance
-          influences how much authority matters.
+          <strong>RAG quality</strong> — relevance, authority, freshness as a
+          graph, not a flat average.
         </li>
         <li>
-          <strong>Incident diagnosis</strong> — CPU, memory, network, and error
-          rate monitors as nodes. Belief propagation finds the root cause by
-          propagating evidence through the dependency graph.
+          <strong>Incident diagnosis</strong> — CPU, memory, network, errors
+          propagate evidence to a likely root cause.
         </li>
         <li>
-          <strong>Multi-sensor fusion</strong> — IoT sensors with different
-          accuracy and spatial relationships. Each sensor updates based on
-          neighbors.
-        </li>
-        <li>
-          <strong>Pipeline quality assessment</strong> — four quality signals
-          (input validation, processing confidence, output coherence, factual
-          grounding) as a belief graph. Input quality influences processing
-          confidence, creating information flow that averaging would miss.
+          <strong>Pipeline quality</strong> — validation → processing confidence
+          → output coherence as linked beliefs.
         </li>
       </ul>
 
@@ -492,137 +388,78 @@ result = propagate(graph, damping=0.3)
 
       <h3>The Problem</h3>
       <p>
-        You&rsquo;re processing a stream of data — news articles, log entries,
-        user feedback, sensor readings. Some of it contains real patterns. Most
-        of it is noise. How do you tell the difference without domain-specific
-        rules for every type of data?
+        Streams of articles, logs, feedback, sensors. Some contain real patterns.
+        Most is noise. You don&rsquo;t want a hand-tuned rule for every type.
       </p>
 
       <h3>The Guarantee</h3>
       <p>
-        The Minimum Description Length principle says: <strong>if a pattern can
-        be described more concisely than the raw data, it&rsquo;s real</strong>.
-        Random noise can&rsquo;t be compressed — by definition, every bit is
-        unpredictable. Structured data compresses well because there are
-        patterns to exploit.
-      </p>
-      <p>
-        We use <code>zlib</code> as a practical Kolmogorov complexity estimator.
-        Compress the data and measure the ratio. Low ratio = structure = signal.
-        High ratio = randomness = noise.
+        If a pattern can be described more concisely than the raw data,
+        it&rsquo;s real. Random noise doesn&rsquo;t compress. Structured data
+        does. Compress, measure the ratio, keep the compressible stuff.
       </p>
 
       <h3>The Code</h3>
       <pre><code>{`from agent_algebra import mdl_filter, algorithmic_compression_ratio
 
-# Quick check: is this data structured or random?
 ratio = algorithmic_compression_ratio(article_text)
-# ratio = 0.32 → highly compressible → structured → signal
-# ratio = 0.91 → barely compresses → random → noise
+# 0.32 → highly compressible → signal
+# 0.91 → barely compresses → noise
 
-# Filter a batch: keep only items that contain real patterns
 signals = mdl_filter(
     items=daily_articles,
-    summarize_fn=llm_summarize,      # your LLM summarizer
-    reconstruct_fn=llm_reconstruct,  # can the summary reconstruct key facts?
-    compression_threshold=0.5,       # summary must be < 50% of original
-    reconstruction_threshold=0.3,    # at least 30% fact recovery
+    summarize_fn=llm_summarize,
+    reconstruct_fn=llm_reconstruct,
+    compression_threshold=0.5,
+    reconstruction_threshold=0.3,
 )`}</code></pre>
 
       <h3>Where You&rsquo;d Use This</h3>
       <ul>
         <li>
-          <strong>Log analysis</strong> — separate meaningful error patterns from
-          noise in high-volume log streams.
+          <strong>Log analysis</strong> — keep meaningful error patterns, drop
+          chatter.
         </li>
         <li>
-          <strong>Content curation</strong> — filter AI-generated slop from
-          genuine content. Slop has high compression ratios (repetitive patterns).
+          <strong>Content curation</strong> — filter repetitive slop before
+          scoring.
         </li>
         <li>
-          <strong>Feature importance</strong> — in ML pipelines, features that
-          compress well relative to the target contain signal.
-        </li>
-        <li>
-          <strong>Data ingestion pipelines</strong> — processing hundreds of
-          documents daily. MDL filter drops noise before LLM scoring, saving
-          40% of API costs.
+          <strong>Ingestion pipelines</strong> — drop noise early to cut API cost.
         </li>
       </ul>
-
-      <hr />
-
-      <h2>Composing the Pipeline</h2>
-      <p>
-        Each primitive works standalone, but they&rsquo;re designed to compose.
-        The <code>Pipeline</code> chains them into an immutable sequence where
-        each step transforms data and passes it to the next.
-      </p>
-      <pre><code>{`from agent_algebra import Pipeline
-
-pipeline = (
-    Pipeline()
-    .add("filter", lambda data: mdl_filter(data, summarize, reconstruct))
-    .add("beliefs", lambda filtered: propagate(build_graph(agents, edges)).beliefs)
-    .add("score", lambda beliefs: tracker.aggregate(beliefs))
-    .add("size", lambda prob: prob * ergodic.ergodic_fraction)
-)
-
-# Traced execution — see every intermediate value
-trace = pipeline.run_traced(raw_data)
-for step_name, value in trace:
-    print(f"  [{step_name}] {value}")
-
-# [input]   [...raw items...]
-# [filter]  [...signal items only...]
-# [beliefs] {'intent': 0.58, 'relevance': 0.66, ...}
-# [score]   0.6241
-# [size]    0.1123`}</code></pre>
-      <p>
-        Each <code>.add()</code> returns a new Pipeline — immutable builder
-        pattern. The <code>run_traced</code> method captures every intermediate
-        result for debugging. You can inspect exactly where your pipeline&rsquo;s
-        output came from.
-      </p>
 
       <hr />
 
       <h2>The Takeaway</h2>
       <p>
-        Most multi-agent systems are built on intuition — &ldquo;this seems
-        like a reasonable way to combine these models.&rdquo; Agent Algebra
-        replaces intuition with guarantees:
+        Replace &ldquo;this combination seems reasonable&rdquo; with a guarantee
+        per problem:
       </p>
       <ul>
         <li>
-          <strong>Contraction mapping</strong> guarantees your feedback loop
-          converges. A retry loop might oscillate forever.
+          <strong>Settling loops</strong> beat open-ended retries.
         </li>
         <li>
-          <strong>Boosting</strong> guarantees mediocre agents become strong
-          together. Averaging keeps them mediocre.
+          <strong>Focusing later agents on earlier misses</strong> beats averaging.
         </li>
         <li>
-          <strong>Proper scoring</strong> guarantees the best agent gets the most
-          weight. Manual tuning drifts out of date.
+          <strong>Calibration weights</strong> beat manual trust knobs.
         </li>
         <li>
-          <strong>Ergodic correction</strong> guarantees you survive bad streaks.
-          Textbook sizing can ruin you.
+          <strong>Survival-sized budgets</strong> beat textbook averages.
         </li>
         <li>
-          <strong>Belief propagation</strong> guarantees globally optimal
-          consensus. Simple averaging ignores structure.
+          <strong>Graph consensus</strong> beats flat averages when sources relate.
         </li>
         <li>
-          <strong>MDL compression</strong> guarantees you filter noise before
-          it corrupts your pipeline. Threshold-based filters need constant tuning.
+          <strong>Compression filters</strong> beat brittle thresholds for
+          signal/noise.
         </li>
       </ul>
       <p>
-        The library is open source, zero dependencies, and every primitive
-        is a pure function operating on frozen dataclasses. Read the code,
-        run the tests, compose the pipeline.
+        Library: open source, zero dependencies, pure functions on frozen
+        dataclasses. Read the code, run the tests, compose what you need.
       </p>
     </>
   );

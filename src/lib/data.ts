@@ -112,15 +112,44 @@ export const PROJECTS: readonly Project[] = [
 
 export const ARTICLES: readonly Article[] = [
   {
+    id: "production-agents",
+    slug: "production-agents",
+    date: "2026-03-10",
+    title: "4 AI Agents That Actually Run in Production (and How to Deploy Each One)",
+    hook: "Most agent demos break the moment you need them to run unsupervised. Production agents are different: they trigger on webhooks or cron, they handle failures without you, and they cost cents per run. Four real architectures — two that need no orchestrator at all, two that use a simple router loop. Each one solves a problem people actually deal with.",
+    tags: ["AI Agents", "Production Systems", "Deployment"],
+    accent: "toxic",
+    readTime: "12 min",
+    topicCount: 4,
+    topics: [
+      {
+        title: "Research Brief Agent (No Orchestrator)",
+        summary: "Webhook triggers web search + structured draft generation. One Cloud Function, 80 lines of Python, $0.05 per brief. Replaces 6-10 hours/week of mechanical reading and writing.",
+      },
+      {
+        title: "Daily Ops Briefing (No Orchestrator)",
+        summary: "Cron job pulls from 5 tools at 7 AM, LLM writes a 2-minute briefing of what needs attention. 30 seconds to run, $0.02 per day. Replaces 30 min of dashboard-checking.",
+      },
+      {
+        title: "Request Triage Pipeline (With Orchestrator)",
+        summary: "Three agents in sequence: research, score against criteria, route. The orchestrator is 30 lines of routing logic — not a framework. $0.05 per request, saves 15+ hours/week.",
+      },
+      {
+        title: "Codebase Migration (With Orchestrator)",
+        summary: "Scan, migrate in parallel, validate, retry failures with error context, create PR. Handles 400 files for $5. The orchestrator manages fan-out, fan-in, and retry loops.",
+      },
+    ],
+  },
+  {
     id: "control-hierarchy",
     slug: "control-hierarchy",
     date: "2026-03-05",
-    title: "Why the People Who Build Around AI Will Outperform the People Who Use It",
-    hook: "Typing better prompts is not a skill with a future. The real leverage is in building the systems that contain, direct, and verify AI \u2014 pipelines, memory layers, tool orchestration, and evaluation loops. Ten engineering principles, a six-level hierarchy showing where you sit, and seven applications you can build today.",
+    title: "Stop Using AI. Start Building Around It.",
+    hook: "Typing better prompts is not a skill with a future. Wrap the model in systems you control \u2014 memory, tools, checks, and loops. Ten principles, a clear ladder of leverage, and what to own this week.",
     tags: ["AI Engineering", "System Design", "Leverage"],
     accent: "amber",
-    readTime: "16 min",
-    topicCount: 10,
+    readTime: "10 min",
+    topicCount: 6,
     topics: [
       {
         title: "Models Are Components",
@@ -139,28 +168,12 @@ export const ARTICLES: readonly Article[] = [
         summary: "Models degrade when forced to simulate computation. Let them orchestrate tools instead of replacing them.",
       },
       {
-        title: "Control Loops",
-        summary: "Single-shot outputs are fragile. Iterative loops with explicit stop conditions are robust.",
-      },
-      {
         title: "Where You Sit Matters",
-        summary: "Six levels from consumer to goal designer. Real advantage starts at level 3 \u2014 everything below is consumption with better packaging.",
-      },
-      {
-        title: "When Intelligence Is Cheap",
-        summary: "Post-AGI, the bottlenecks shift to data, compute, and goals. The skills that matter today may not matter tomorrow.",
-      },
-      {
-        title: "Agent Workforce",
-        summary: "One operator controlling many autonomous agents. Research, code, analysis, marketing \u2014 the architecture is always the same.",
-      },
-      {
-        title: "Market Structure",
-        summary: "Four layers: model companies, infrastructure, domain operators, users. Individual leverage is highest at the domain layer.",
+        summary: "Real advantage starts at workflow design (level 3). Below that is consumption with better packaging.",
       },
       {
         title: "What to Own",
-        summary: "Own your data, your processes, your infrastructure. Everything else is rented and can be taken away.",
+        summary: "Own your data, your automated processes, and your agent infrastructure. Everything else is rented.",
       },
     ],
   },
@@ -168,37 +181,37 @@ export const ARTICLES: readonly Article[] = [
     id: "agent-algebra",
     slug: "agent-algebra",
     date: "2026-02-28",
-    title: "How to Prove Your Multi-Agent System Actually Improves (Instead of Hoping)",
-    hook: "You built a retry loop, a voting ensemble, a confidence router. But how do you know it converges instead of oscillating? How do you know your voting doesn't amplify the worst agent? You don't \u2014 because there's no theory behind it. Six mathematical theorems change that, each mapped to a composable Python primitive with a provable guarantee.",
+    title: "Six Ways to Know Your Multi-Agent System Actually Improves",
+    hook: "You built a retry loop, a voting ensemble, a confidence router. How do you know it settles instead of oscillating? Six small Python primitives \u2014 each with a plain-English guarantee.",
     tags: ["Agent Composition", "Convergence Guarantees", "Open Source"],
     accent: "amber",
-    readTime: "14 min",
+    readTime: "12 min",
     topicCount: 6,
     repoUrl: "https://github.com/kris-welc/agent-algebra",
     topics: [
       {
-        title: "Will My Loop Converge?",
-        summary: "Your retry loop runs 5 iterations \u2014 is iteration 5 better than 3, or just different? Contraction mapping guarantees convergence instead of oscillation.",
+        title: "Will My Loop Settle?",
+        summary: "Each update moves partway toward measured reality. The loop stops when movement is tiny \u2014 not after a fixed N retries.",
       },
       {
         title: "My Agents Are Mediocre Individually",
-        summary: "Averaging mediocre agents keeps them mediocre. Boosting makes each one focus on what the others missed. Combined error drops exponentially.",
+        summary: "Averaging keeps them mediocre. Make each later agent focus on earlier misses so combined error drops fast.",
       },
       {
         title: "Which Agent Should I Trust?",
-        summary: "Accuracy is the wrong metric \u2014 calibration is what matters. Proper scoring rules automatically give the most weight to the best-calibrated agent.",
+        summary: "Accuracy is the wrong metric \u2014 calibration is what matters. Reward honest probabilities; the best-calibrated agent gets the most weight.",
       },
       {
         title: "How Much Should I Commit?",
-        summary: "Textbook resource allocation assumes independence. Real systems have correlated failures. Path-dependent correction prevents ruin from bad streaks.",
+        summary: "Size budgets for surviving a bad streak, not the average universe. Failures cluster; textbook math assumes they don't.",
       },
       {
         title: "My Sources Disagree",
-        summary: "Simple averaging ignores relationships between sources. Belief propagation uses the structure of how sources relate to reach globally optimal consensus.",
+        summary: "Flat averages ignore relationships. Let neighboring sources share beliefs until the network agrees.",
       },
       {
         title: "Is This Signal or Noise?",
-        summary: "If a pattern compresses, it's real. If it doesn't, it's noise. A universal filter that works without domain-specific rules.",
+        summary: "If a pattern compresses, it's structure. If it doesn't, it's noise. Filter without domain-specific rules.",
       },
     ],
   },
@@ -207,27 +220,27 @@ export const ARTICLES: readonly Article[] = [
     slug: "dual-layer-regime",
     date: "2026-02-28",
     title: "How to Detect When Your System's Rules Stop Working",
-    hook: "Every automated system — recommendation engines, autoscalers, ML models, autonomous agents — runs on assumptions about current conditions. When conditions change, the old rules fail before you notice. Two independent detectors solve this: one classifies what mode you're in, the other catches the moment you're leaving it. Together they buy you 1-3 data points of early warning.",
-    tags: ["Adaptive Systems", "Drift Detection", "Regime Classification"],
+    hook: "One sensor says what mode you're in. Another says you're leaving it. Multiply them so you get cautious during transitions \u2014 before the old rules hurt you.",
+    tags: ["Adaptive Systems", "Drift Detection", "Mode Classification"],
     accent: "toxic",
-    readTime: "10 min",
+    readTime: "8 min",
     topicCount: 4,
     topics: [
       {
-        title: "Structural Classification",
-        summary: "How much of the total movement is productive? One ratio tells you if you're in signal or noise — and five graduated tiers let you respond proportionally.",
+        title: "Useful vs Wasted Movement",
+        summary: "How much of the total movement was productive? Five modes from CLEAR to CHAOS let you respond proportionally.",
       },
       {
         title: "Transition Detection",
-        summary: "Adaptive windowing that grows during stability and shrinks during change. Catches the moment conditions shift, before your classifier updates.",
+        summary: "Notice when recent data stops matching older data. Catch the shift before your mode classifier renames it.",
       },
       {
         title: "Graduated Response",
-        summary: "Five confidence tiers from full trust to extreme caution. Key insight: pessimistic signals work in noisy conditions, optimistic ones don't.",
+        summary: "Defensive signals still work in noise; optimistic ones don't. Block hope-driven actions when the stream is chaotic.",
       },
       {
-        title: "Multiplicative Composition",
-        summary: "Two independent layers multiply together. Most conservative during transitions in noisy conditions — no manual rules needed.",
+        title: "Multiply the Two Layers",
+        summary: "Mode confidence \u00d7 transition caution. Most conservative during noisy transitions \u2014 no manual rules needed.",
       },
     ],
   },
@@ -235,24 +248,24 @@ export const ARTICLES: readonly Article[] = [
     id: "vpin-conviction",
     slug: "vpin-conviction",
     date: "2026-02-28",
-    title: "How to Use Expert Behavior to Adjust Your Confidence in Real Time",
-    hook: "In any system where some participants know more than others — markets, content platforms, hiring pipelines, open source ecosystems — the actions of informed actors carry signal you can measure. This article shows how to detect when experts are acting, which direction they favor, and how to adjust your own confidence asymmetrically: cut more when they disagree, boost less when they agree.",
+    title: "When Experts Disagree With You, Cut Confidence Harder",
+    hook: "Watch what the best-informed people do. If they oppose you, trust yourself less \u2014 more than you trust yourself more when they agree. Hiring, product, and content all work the same way.",
     tags: ["Decision Systems", "Informed Flow", "Real-Time Enrichment"],
     accent: "rust",
-    readTime: "8 min",
+    readTime: "6 min",
     topicCount: 3,
     topics: [
       {
         title: "Measuring Informed Activity",
-        summary: "A simple ratio — flow imbalance vs total flow — reveals when knowledgeable participants are acting and which direction they favor.",
+        summary: "Imbalance between opposing flows reveals when knowledgeable participants are acting and which way they lean.",
       },
       {
         title: "Asymmetric Confidence Adjustment",
-        summary: "When experts agree with you, boost confidence modestly (+0.15). When they disagree, cut harder (-0.20). Missing an opportunity costs less than overcommitting to a mistake.",
+        summary: "Modest boost when experts agree; larger cut when they disagree. Missing an opportunity costs less than overcommitting.",
       },
       {
         title: "Decoupled Real-Time Architecture",
-        summary: "Two independent processes, shared SQLite in WAL mode, timeout-based reads. The enrichment layer is always additive, never blocking.",
+        summary: "Collector writes; decision maker reads with a timeout. Enrichment is always additive, never blocking.",
       },
     ],
   },
@@ -304,102 +317,62 @@ export const ARTICLES: readonly Article[] = [
   },
   {
     id: "vibe-coding-2-rules",
-    title: "18 Decisions That Separate Builders Who Ship From Builders Who Don't",
-    hook: "You're not slow because you're a bad developer. You're slow because you made 18 decisions that felt right but buried you in work that didn't need to exist. Auth, state management, deployment, payments \u2014 every one has a fast path and a trap. Here's which is which.",
+    title: "10 Decisions That Separate Builders Who Ship From Builders Who Don't",
+    hook: "Defaults for a Next.js SaaS MVP. You're not slow because you're a bad developer \u2014 you're slow because of tool choices that feel professional but add weeks of work you don't need yet.",
     tags: ["Development", "Shipping", "Tools"],
     accent: "toxic",
-    readTime: "12 min",
-    topicCount: 18,
+    readTime: "8 min",
+    topicCount: 10,
     topics: [
       {
-        title: "Use Ready-Made Auth",
+        title: "Ready-Made Auth",
         summary:
-          "Clerk or Supabase Auth. Sessions, tokens, OAuth, security edge cases — handled. Stop spending 2 weeks on auth for an MVP nobody has validated yet.",
+          "Clerk or Supabase Auth. Stop spending 2 weeks on sessions and OAuth for an MVP nobody has validated yet.",
       },
       {
-        title: "Tailwind + shadcn/ui for UI",
+        title: "Tailwind + shadcn/ui",
         summary:
-          "Figma to working UI in 2-3 hours. Consistent sizing, no random colors, no eyeballing pixels at 1am. The highest ROI decision you'll make.",
+          "Figma to working UI in hours. Accessible primitives included. Highest ROI UI decision for this stack.",
       },
       {
         title: "Zustand + Server Components",
         summary:
-          "No Redux. No 6-layer Context wrappers. No PhD in state architecture for a product with 12 users. Zustand for client state, Server Components for the rest.",
+          "No Redux. No 6-layer Context wrappers. Zustand for client state; Server Components for the rest.",
       },
       {
-        title: "tRPC + Server Actions for APIs",
+        title: "tRPC + Server Actions",
         summary:
-          "End-to-end type safety without configuration overhead. Eliminates an entire layer of boilerplate that used to eat up days.",
+          "End-to-end type safety without a custom API layer that eats days of boilerplate.",
       },
       {
-        title: "Deploy with Vercel One-Click",
+        title: "Vercel + Preview Deploys",
         summary:
-          "One push to main, done. Your energy is worth more than your server config. Manual deployments are a productivity trap.",
+          "Push to main ships. Every PR gets a preview URL. Manual server config is a productivity trap.",
       },
       {
         title: "Prisma + Managed Postgres",
         summary:
-          "Typed ORM, easy migrations, easy reads. Supabase/Neon/Railway for managed hosting. Handles 95% of what any MVP needs without friction.",
+          "Typed ORM + Supabase/Neon/Railway. Handles 95% of what an MVP needs without friction.",
       },
       {
-        title: "Validate with Zod + RHF",
+        title: "Zod + Stripe + Env Secrets",
         summary:
-          "Zod for schema validation, React Hook Form for state. Unvalidated inputs is how you get broken data and angry users at 2am.",
+          "Validate inputs, never build payments, never hardcode keys. Three traps that look optional until they aren't.",
       },
       {
-        title: "Stripe for Payments",
+        title: "Sentry + Analytics on Day 1",
         summary:
-          "Never build your own payment system. Payments, subscriptions, refunds, compliance — 45 minutes to integrate and it works.",
+          "Know what broke and how users move. Guessing for 3 months is how you build the wrong thing.",
       },
       {
-        title: "Error Tracking on Day 1",
+        title: "README + Predictable Folders",
         summary:
-          "Sentry tells you what broke, where, and how often. Set it up before launch, not after a user tweets at you about a crash.",
+          "20 minutes of structure saves hours later. Components, hooks, utils, types — keep it boring.",
       },
       {
-        title: "Analytics From the Start",
+        title: "Empty States + Lighthouse Before Launch",
         summary:
-          "PostHog or Plausible. If you don't know how users move through your product, you're guessing. Guessing for 3 months is how you build the wrong thing.",
-      },
-      {
-        title: "Secrets in Env Files",
-        summary:
-          "Hardcoding API keys is obvious in hindsight, catastrophic in the moment. Use .env, add to .gitignore, use Doppler or Vercel for production.",
-      },
-      {
-        title: "UploadThing for Files",
-        summary:
-          "File uploads seem simple until you're managing storage, CDN, size limits, and security. Integrate in an afternoon, move on.",
-      },
-      {
-        title: "Preview Deployments",
-        summary:
-          "Every PR gets a preview URL. Test changes before production. Saves you from emergency rollbacks at midnight.",
-      },
-      {
-        title: "Radix + shadcn Components",
-        summary:
-          "Unstyled, accessible, production-grade primitives. Build almost any UI pattern without reinventing the wheel.",
-      },
-      {
-        title: "README From Day 1",
-        summary:
-          "You won't remember how everything works in 3 weeks. 20 minutes to write, saves 4 hours of confusion. Makes client handoffs smooth.",
-      },
-      {
-        title: "Clean Folder Structure",
-        summary:
-          "Messy structure compounds. Every feature added to a messy codebase costs 30% more time just navigating. Components, hooks, utils, types — keep it predictable.",
-      },
-      {
-        title: "Onboarding + Empty States",
-        summary:
-          "Most underrated UX investment. Empty states tell users what to do. Onboarding shows how to get value on day one. Confused users don't convert — they leave.",
-      },
-      {
-        title: "Lighthouse Before Launch",
-        summary:
-          "Slow apps lose users. Free performance audit in 30 seconds. Score below 70 is a red flag. Fix before launch, not after you've lost users.",
+          "Confused users leave. Slow apps lose the rest. Fix both before you call it shipped.",
       },
     ],
   },

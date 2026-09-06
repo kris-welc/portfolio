@@ -8,7 +8,7 @@ import { useArticleStats } from "@/hooks/use-article-stats";
 
 export function ArticlesSection() {
   const containerRef = useRevealAll();
-  const { toggleStar, isStarred, getStats } = useArticleStats();
+  const { getStats } = useArticleStats();
 
   return (
     <section id="articles" className="relative px-6 py-24" ref={containerRef}>
@@ -32,9 +32,6 @@ export function ArticlesSection() {
                 <ArticleCard
                   article={article}
                   views={articleStats.views}
-                  stars={articleStats.stars}
-                  isStarred={isStarred(slug)}
-                  onStar={() => toggleStar(slug)}
                 />
               </div>
             );

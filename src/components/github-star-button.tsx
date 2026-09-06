@@ -6,10 +6,9 @@ import { cn } from "@/lib/utils";
 
 type StarStatus = "loading" | "ready" | "starred" | "starring";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "";
-
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 const STORAGE_KEY = "gh-starred-agent-algebra";
+const REPO = "kris-welc/agent-algebra";
 
 interface GitHubStarButtonProps {
   readonly variant?: "compact" | "full";
@@ -22,27 +21,37 @@ export function GitHubStarButton({
 }: GitHubStarButtonProps) {
   const [status, setStatus] = useState<StarStatus>("loading");
   const [authenticated, setAuthenticated] = useState(false);
+  const [starCount, setStarCount] = useState<number | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
-    // Check URL param (returning from OAuth redirect)
+    fetch(`https://api.github.com/repos/${REPO}`, {
+      headers: { Accept: "application/vnd.github+json" },
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { stargazers_count?: number } | null) => {
+        if (typeof data?.stargazers_count === "number") {
+          setStarCount(data.stargazers_count);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("starred") === "1") {
       localStorage.setItem(STORAGE_KEY, "true");
-      // Clean up URL
       const clean = window.location.pathname;
       window.history.replaceState({}, "", clean);
       setStatus("starred");
       return;
     }
 
-    // Check localStorage first (works on GitHub Pages without API)
     if (localStorage.getItem(STORAGE_KEY) === "true") {
       setStatus("starred");
       return;
     }
 
-    // If API is available (Vercel deployment), check server-side
     if (!API_BASE) {
       fetch("/api/star")
         .then((res) => res.json())
@@ -62,21 +71,18 @@ export function GitHubStarButton({
   const handleClick = async () => {
     if (status === "starred" || status === "starring") return;
 
-    // On GitHub Pages OR unauthenticated: redirect through Vercel OAuth
     if (API_BASE || !authenticated) {
-      const returnTo = API_BASE
-        ? window.location.href
-        : pathname;
+      const returnTo = API_BASE ? window.location.href : pathname;
       window.location.href = `${API_BASE}/api/auth/github?returnTo=${encodeURIComponent(returnTo)}`;
       return;
     }
 
-    // On Vercel, already authenticated: star directly
     setStatus("starring");
     const res = await fetch("/api/star", { method: "PUT" });
     if (res.ok) {
       localStorage.setItem(STORAGE_KEY, "true");
       setStatus("starred");
+      setStarCount((n) => (typeof n === "number" ? n + 1 : n));
     } else {
       window.location.href = `/api/auth/github?returnTo=${encodeURIComponent(pathname)}`;
     }
@@ -84,11 +90,14 @@ export function GitHubStarButton({
 
   const isCompact = variant === "compact";
   const isStarred = status === "starred";
+  const countLabel =
+    typeof starCount === "number" ? ` · ${starCount}` : "";
 
   return (
     <button
       onClick={handleClick}
       disabled={isStarred}
+      title="Star kris-welc/agent-algebra on GitHub"
       className={cn(
         "inline-flex items-center gap-2 rounded-md border font-mono tracking-wider transition-all",
         isCompact ? "px-2.5 py-1.5 text-[0.65rem]" : "px-4 py-2 text-xs",
@@ -110,10 +119,10 @@ export function GitHubStarButton({
       {status === "starring"
         ? "STARRING..."
         : isStarred
-          ? "STARRED"
+          ? `STARRED${countLabel}`
           : isCompact
-            ? "STAR"
-            : "STAR ON GITHUB"}
+            ? `GITHUB${countLabel}`
+            : `STAR ON GITHUB${countLabel}`}
     </button>
   );
 }
