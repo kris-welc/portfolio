@@ -3,17 +3,15 @@
 import { SectionLabel } from "@/components/section-label";
 import { ArticleCard } from "@/components/article-card";
 import { ARTICLES } from "@/lib/data";
-import { useRevealAll } from "@/hooks/use-reveal";
 import { useArticleStats } from "@/hooks/use-article-stats";
 
 export function ArticlesSection() {
-  const containerRef = useRevealAll();
   const { getStats } = useArticleStats();
 
   return (
-    <section id="articles" className="relative px-6 pt-28 pb-24" ref={containerRef}>
+    <section id="articles" className="relative min-h-screen px-6 pt-28 pb-24">
       <div className="mx-auto max-w-6xl">
-        <div className="reveal mb-12">
+        <div className="mb-12">
           <SectionLabel code="SEC_01" label="FIELD NOTES" />
           <h2 className="gradient-bone font-display text-3xl font-bold tracking-wide md:text-4xl">
             Dispatches
@@ -28,12 +26,11 @@ export function ArticlesSection() {
             const slug = article.slug ?? article.id;
             const articleStats = getStats(slug);
             return (
-              <div key={article.id} className="reveal">
-                <ArticleCard
-                  article={article}
-                  views={articleStats.views}
-                />
-              </div>
+              <ArticleCard
+                key={article.id}
+                article={article}
+                views={articleStats.views}
+              />
             );
           })}
         </div>
