@@ -19,7 +19,7 @@ export default async function Image({ params }: ImageProps) {
   const article = ARTICLES.find((a) => a.slug === slug);
 
   const title = article?.title ?? "Dispatches";
-  const tags = article?.tags.slice(0, 3).join("  ·  ") ?? "";
+  const tags = article?.tags.slice(0, 2).join("  ·  ") ?? "";
   const meta = [
     article?.date
       ? new Date(article.date).toLocaleDateString("en-US", {
@@ -53,13 +53,17 @@ export default async function Image({ params }: ImageProps) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            fontSize: 22,
-            letterSpacing: 5,
+            // Social crawlers re-render this card down to 480px wide, so
+            // secondary type is sized for a 2.5x shrink, not for 1200px.
+            fontSize: 30,
+            letterSpacing: 3,
             color: "#e5a21a",
           }}
         >
           <div style={{ display: "flex" }}>DISPATCHES</div>
-          <div style={{ display: "flex", color: "#8a8071" }}>{tags}</div>
+          <div style={{ display: "flex", color: "#a89b85", whiteSpace: "nowrap" }}>
+            {tags}
+          </div>
         </div>
 
         <div
@@ -81,8 +85,8 @@ export default async function Image({ params }: ImageProps) {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            fontSize: 24,
-            color: "#8a8071",
+            fontSize: 30,
+            color: "#a89b85",
           }}
         >
           <div style={{ display: "flex", gap: 18, alignItems: "center" }}>
