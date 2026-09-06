@@ -52,30 +52,36 @@ export function AstraFieldTestContent() {
 
       <ol>
         <li>
-          <strong>Frozen tests measure your tests.</strong> Both models passed
-          all 16. Only one of them avoided breaking behaviour nobody had written
-          down.
+          <strong>Frozen tests measure your tests.</strong> GPT-5.6 Terra and
+          GPT-6 Astra both passed all 16. Astra kept the original behaviour on
+          two edge cases the suite never asked about; Terra introduced
+          regressions on both.
         </li>
         <li>
-          <strong>Judgment improved, and it is measurable.</strong> +6.1 pp
-          balanced accuracy across 300 matched calls, zero sound proposals
-          wrongly blocked, and the same verdict on every repeat.
+          <strong>Astra judged better, and it is measurable.</strong> +6.1 pp
+          balanced accuracy for Astra over Terra across 300 matched calls. Astra
+          wrongly blocked 0% of sound proposals (Terra: 16.7%) and gave the same
+          verdict on every repeat (Terra: 88%).
         </li>
         <li>
           <strong>&ldquo;Safer&rdquo; can just be pedantry.</strong>{" "}
           Terra&rsquo;s lower false-acceptance rate came from rejecting an empty
           field, not from better risk sense &mdash; and it cost 8 wrongly blocked
-          good ideas.
+          good ideas. Astra accepted those packets by auditing the claim, not
+          the blank form field.
         </li>
         <li>
-          <strong>A better model is not a better pipeline.</strong> 24
-          hypotheses tested, 24 rejected, in both arms. For a research loop, that
-          is the expected reading, not a failure.
+          <strong>A better model is not a better pipeline &mdash; yet.</strong>{" "}
+          Astra and Terra both ran 12 hypotheses and both got 0 promotions. That
+          is the expected reading for a short research loop, not a failure. It
+          also means we need more branch-days before the loop can rank the two
+          models on outcomes.
         </li>
         <li>
-          <strong>Split judgment from enforcement.</strong> Let the model reason
-          about the claim; keep required fields, budgets, and promotion
-          thresholds in deterministic code. That beats picking a favourite model.
+          <strong>Split judgment from enforcement.</strong> Prefer Astra for
+          claim judgment; keep required fields, budgets, and promotion
+          thresholds in deterministic code. That beats picking a favourite model
+          alone.
         </li>
       </ol>
 
@@ -380,7 +386,7 @@ export function AstraFieldTestContent() {
         candidates as Terra did: none.
       </p>
 
-      <h3>Zero Is the Normal Reading of a Hypothesis Test</h3>
+      <h3>Zero Is Normal &mdash; and Too Short to Rank the Models</h3>
 
       <p>
         Every branch-day here is a hypothesis test, not a lottery ticket. A
@@ -392,7 +398,7 @@ export function AstraFieldTestContent() {
       </p>
 
       <p>
-        So &ldquo;24 hypotheses tested, 24 rejected&rdquo; is the pipeline
+        So &ldquo;Astra: 0 of 12; Terra: 0 of 12&rdquo; is the pipeline
         reporting that it worked. The gates were doing their job before the model
         swap and they kept doing it after. A model change that suddenly started
         producing passing candidates on the same data would have been the
@@ -400,12 +406,15 @@ export function AstraFieldTestContent() {
       </p>
 
       <p>
-        It also means this test is honest about its own limits. With zero
-        promotions in both arms, it cannot rank the two models on the quality of
-        their <em>output</em>. What it can show &mdash; and does &mdash; is that
-        the loop runs end to end, that yesterday&rsquo;s rejection reaches
-        tomorrow&rsquo;s proposal, and that the Astra arm reached the same verdict
-        with fewer blocks and fewer API calls.
+        It also means this layer is honest about its own limits. With zero
+        promotions in both arms over only 24 branch-days, it cannot yet rank
+        Astra against Terra on the quality of their <em>output</em>. What it can
+        show &mdash; and does &mdash; is that the loop runs end to end, that
+        yesterday&rsquo;s rejection reaches tomorrow&rsquo;s proposal, and that
+        the Astra arm reached the same verdict with fewer blocks and fewer API
+        calls. Ranking the models on promotions needs a longer run: more
+        branch-days, more resets, or a softer gate that still rejects most
+        candidates but lets a few through.
       </p>
 
       <hr />

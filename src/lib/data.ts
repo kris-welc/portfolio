@@ -139,22 +139,22 @@ export const ARTICLES: readonly Article[] = [
       {
         title: "300 Matched Judgment Calls",
         summary:
-          "+2.9 pp decision accuracy, +6.1 pp balanced accuracy, 0% wrongly blocked good ideas versus 16.7%, and identical verdicts across all three repeats.",
+          "Astra over Terra: +2.9 pp decision accuracy, +6.1 pp balanced accuracy, 0% wrongly blocked good ideas versus Terra\u2019s 16.7%, and identical verdicts across all three Astra repeats.",
       },
       {
         title: "Why the 'Safer' Model Looked Safer",
         summary:
-          "Every false acceptance came from one fixture family: a blank falsification field. One model audited the form, the other audited the claim. Only one of those is a risk instinct.",
+          "Every false acceptance came from one fixture family: a blank falsification field. Terra audited the form; Astra audited the claim. Only one of those is a risk instinct.",
       },
       {
         title: "The Loop Test Nobody Runs",
         summary:
-          "24 branch-days of propose \u2192 review \u2192 real backtest \u2192 feed forward. Fewer blocks, fewer calls, stable feedback \u2014 and 24 hypotheses tested and rejected in both arms, which is what a working research loop looks like.",
+          "24 branch-days of propose \u2192 review \u2192 real backtest \u2192 feed forward. Astra and Terra each got 0 promotions \u2014 expected for a short research loop, and too short to rank the models on outcomes.",
       },
       {
         title: "Split Judgment From Enforcement",
         summary:
-          "Give the stronger model the reasoning; keep required fields, budgets, and promotion thresholds in deterministic code. Three lines of enforcement erase the model's entire false-acceptance category.",
+          "Prefer Astra for claim judgment; keep required fields, budgets, and promotion thresholds in deterministic code. Three lines of enforcement erase Astra\u2019s entire false-acceptance category.",
       },
     ],
   },

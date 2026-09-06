@@ -38,7 +38,7 @@ const LAYERS: readonly Layer[] = [
     ],
     verdict: "TIE",
     won: false,
-    note: "Both patches passed everything. Both were then found to break behaviour the suite never checked.",
+    note: "Both passed all 16. Terra then broke two edge cases the suite never checked; Astra did not.",
   },
   {
     index: "02",
@@ -78,9 +78,9 @@ const LAYERS: readonly Layer[] = [
         passed: 0,
       },
     ],
-    verdict: "TIE",
+    verdict: "TOO SHORT",
     won: false,
-    note: "Every branch-day is one hypothesis put through the frozen gates. All 24 were tested and all 24 were rejected — the expected reading for a research loop, in both arms.",
+    note: "Astra and Terra each tested 12 hypotheses and each got 0 promotions. Expected for a short research loop — we need more branch-days before this layer can rank the models.",
   },
 ];
 
