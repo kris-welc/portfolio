@@ -9,6 +9,7 @@ import {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 const VIEWS_KEY = "article_views";
+const VISITOR_KEY = "article_visitor_id";
 
 function readSet(key: string): Set<string> {
   if (typeof window === "undefined") return new Set();
@@ -28,16 +29,32 @@ function writeSet(key: string, set: Set<string>): void {
   }
 }
 
-async function postView(slug: string): Promise<number | null> {
+function getVisitorId(): string {
+  try {
+    const existing = localStorage.getItem(VISITOR_KEY);
+    if (existing && /^[0-9a-f-]{36}$/i.test(existing)) return existing;
+    const id = crypto.randomUUID();
+    localStorage.setItem(VISITOR_KEY, id);
+    return id;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
+
+async function postView(
+  slug: string,
+  visitorId: string,
+): Promise<{ count: number; counted: boolean } | null> {
   try {
     const res = await fetch(`${API_BASE}/api/stats`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug, action: "view" }),
+      body: JSON.stringify({ slug, action: "view", visitorId }),
     });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { count?: number };
-    return typeof data.count === "number" ? data.count : null;
+    if (!res.ok && res.status !== 429) return null;
+    const data = (await res.json()) as { count?: number; counted?: boolean };
+    if (typeof data.count !== "number") return null;
+    return { count: data.count, counted: Boolean(data.counted) };
   } catch {
     return null;
   }
@@ -69,20 +86,30 @@ export function useArticleStatsState(): ArticleStatsContextValue {
   const recordView = useCallback((slug: string) => {
     const viewed = readSet(VIEWS_KEY);
     if (viewed.has(slug)) return;
+
+    const visitorId = getVisitorId();
+
+    // Optimistic bump for first visit in this browser
     viewed.add(slug);
     writeSet(VIEWS_KEY, viewed);
-
     setStats((prev) => ({
       ...prev,
       [slug]: { views: (prev[slug]?.views ?? 0) + 1 },
     }));
 
-    void postView(slug).then((count) => {
-      if (count == null) return;
-      setStats((prev) => ({
-        ...prev,
-        [slug]: { views: Math.max(prev[slug]?.views ?? 0, count) },
-      }));
+    void postView(slug, visitorId).then((result) => {
+      if (!result) return;
+      setStats((prev) => {
+        const current = prev[slug]?.views ?? 0;
+        // If server did not count (duplicate / rate limit), snap to server total
+        if (!result.counted) {
+          return { ...prev, [slug]: { views: result.count } };
+        }
+        return {
+          ...prev,
+          [slug]: { views: Math.max(current, result.count) },
+        };
+      });
     });
   }, []);
 
