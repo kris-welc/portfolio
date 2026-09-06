@@ -27,7 +27,7 @@ export function WastelandBadge({
     <Badge
       variant="outline"
       className={cn(
-        "rounded font-mono text-[0.65rem] uppercase tracking-wider",
+        "rounded font-mono text-xs uppercase tracking-wider",
         variantStyles[variant],
         className
       )}

@@ -33,8 +33,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!article) return { title: "Not Found" };
 
   return {
-    title: `${article.title} | Kris Welc`,
+    title: article.title,
     description: article.hook,
+    alternates: { canonical: `/articles/${slug}` },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.hook,
+      url: `/articles/${slug}`,
+      publishedTime: article.date,
+      authors: ["Kris Welc"],
+      tags: [...article.tags],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.hook,
+    },
   };
 }
 

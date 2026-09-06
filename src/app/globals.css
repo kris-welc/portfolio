@@ -50,7 +50,8 @@
   --color-waste-bone: #ede6d4;
   --color-waste-sand: #c9bc9e;
   --color-waste-dim: #928672;
-  --color-waste-ash: #584f3d;
+  /* Meta text tone — 5.1:1 on bg, 4.6:1 on panel (WCAG AA) */
+  --color-waste-ash: #8a8071;
 }
 
 :root {
@@ -121,42 +122,6 @@ nav, main, footer, header {
 
 /* === WASTELAND EFFECTS === */
 
-/* Film grain */
-.grain::before {
-  content: '';
-  position: fixed;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9998;
-  animation: grain-shift 0.5s steps(1) infinite;
-}
-
-@keyframes grain-shift {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-2px, 1px); }
-  50% { transform: translate(1px, -1px); }
-  75% { transform: translate(-1px, 2px); }
-  100% { transform: translate(2px, -2px); }
-}
-
-/* Scanlines */
-.scanlines::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.06) 2px,
-    rgba(0, 0, 0, 0.06) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
-}
-
 /* CRT vignette — softened for readability */
 .vignette::before {
   content: '';
@@ -222,20 +187,6 @@ nav, main, footer, header {
 
 .status-live {
   animation: rad-pulse 2s ease-in-out infinite;
-}
-
-/* Title flicker */
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  93% { opacity: 0.8; }
-  94% { opacity: 1; }
-  96% { opacity: 0.9; }
-  97% { opacity: 1; }
-}
-
-.flicker {
-  animation: flicker 4s ease-in-out infinite;
 }
 
 /* Radiation diagonal stripes */
@@ -479,4 +430,13 @@ nav, main, footer, header {
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

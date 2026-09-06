@@ -36,11 +36,7 @@ export function ArticleLayout({ article, children }: ArticleLayoutProps) {
         <header className="mb-12">
           <div className="mb-4 flex flex-wrap items-center gap-3">
             {article.tags.map((tag) => (
-              <WastelandBadge
-                key={tag}
-                variant={article.accent}
-                className="text-[0.6rem]"
-              >
+              <WastelandBadge key={tag} variant={article.accent}>
                 {tag}
               </WastelandBadge>
             ))}

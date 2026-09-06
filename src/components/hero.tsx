@@ -19,7 +19,7 @@ export function Hero() {
           </span>
         </div>
 
-        <h1 className="flicker mb-10 font-display text-6xl font-bold tracking-tight md:text-8xl">
+        <h1 className="mb-10 font-display text-6xl font-bold tracking-tight md:text-8xl">
           <span className="gradient-hot">KRIS WELC</span>
         </h1>
 

@@ -22,8 +22,8 @@ export function ArticlesSection() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {ARTICLES.map((article) => {
-            const slug = article.slug ?? article.id;
+          {ARTICLES.filter((article) => article.slug).map((article) => {
+            const slug = article.slug!;
             const articleStats = getStats(slug);
             return (
               <ArticleCard
