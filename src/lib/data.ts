@@ -120,12 +120,12 @@ export const ARTICLES: readonly Article[] = [
     id: "astra-field-test",
     slug: "astra-field-test",
     date: "2026-09-06",
-    title: "A Better Model Is Not a Better Pipeline",
+    title: "Astra Earned the Reviewer\u2019s Job",
     image: "/images/astra-field-test.jpg",
     imageThumb: "/images/astra-field-test-thumb.jpg",
     imageAlt:
       "A spiral of blue and amber stars with the words UNDER TESTS glowing at its centre",
-    hook: "I gave GPT-6 Astra the same work GPT-5.6 Terra already does for me \u2014 one bug fix, 300 review calls, 24 days of a full research loop \u2014 with frozen tests written before either model started. Judgment improved measurably. Outcomes did not move at all. Both results matter, and the second one is why I trust the first.",
+    hook: "I gave GPT-6 Astra the same work GPT-5.6 Terra already does for me \u2014 one bug fix, 300 review calls, 24 days of a full research loop \u2014 with tests frozen before either model started. Astra judged better on every measure I could check, never once threw away a good idea, and gave the same verdict every time it was asked. It did not move my outcomes, and that is exactly why I trust the judgment result.",
     tags: ["Model Evaluation", "Agent Judgment", "Measured Results"],
     accent: "toxic",
     readTime: "9 min",
@@ -149,7 +149,7 @@ export const ARTICLES: readonly Article[] = [
       {
         title: "The Loop Test Nobody Runs",
         summary:
-          "24 branch-days of propose \u2192 review \u2192 real backtest \u2192 feed forward. Astra and Terra each got 0 promotions \u2014 expected for a short research loop, and too short to rank the models on outcomes.",
+          "24 branch-days of propose \u2192 review \u2192 real backtest \u2192 feed forward, Astra in both roles against my usual Luna proposer and Terra reviewer. Same candidates, same zero promotions \u2014 but Astra needed 25% fewer calls and half the output tokens to get there.",
       },
       {
         title: "Split Judgment From Enforcement",

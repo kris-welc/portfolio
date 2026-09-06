@@ -58,11 +58,11 @@ const LAYERS: readonly Layer[] = [
     index: "03",
     question: "Does the system improve?",
     measure: "Hypotheses tested vs promoted",
-    sample: "3 independent resets × 4 days × 2 arms · 24 branch-days",
+    sample: "3 independent resets × 4 days × 2 arms · 24 branch-days · Luna/Terra vs Astra/Astra",
     kind: "tally",
     rows: [
       {
-        label: "GPT-5.6 Terra",
+        label: "Luna + Terra",
         percent: 0,
         display: "0 of 12",
         tone: "terra",
@@ -70,7 +70,7 @@ const LAYERS: readonly Layer[] = [
         passed: 0,
       },
       {
-        label: "GPT-6 Astra",
+        label: "Astra + Astra",
         percent: 0,
         display: "0 of 12",
         tone: "astra",
@@ -80,7 +80,7 @@ const LAYERS: readonly Layer[] = [
     ],
     verdict: "TOO SHORT",
     won: false,
-    note: "Astra and Terra each tested 12 hypotheses and each got 0 promotions. Expected for a short research loop — we need more branch-days before this layer can rank the models.",
+    note: "Each arm tested 12 hypotheses and each got 0 promotions — expected for a short research loop. Astra reached the same candidates with 25% fewer calls, but both its roles changed together, so this layer ranks nothing on judgment.",
   },
 ];
 

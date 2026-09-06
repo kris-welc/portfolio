@@ -5,9 +5,11 @@ export function AstraFieldTestContent() {
     <>
       <p>
         <strong>In one sentence:</strong> I gave GPT-6 Astra the same work
-        GPT-5.6 Terra already does for me, measured three layers of it, and found
-        better judgment with identical outcomes &mdash; because the outcomes were
-        never the model&rsquo;s to give.
+        GPT-5.6 Terra already does for me, measured three layers of it, and Astra
+        won the layer I could measure properly &mdash; better judgment, zero good
+        ideas thrown away, the same verdict every time &mdash; while my outcomes
+        stayed exactly where they were, because those were never the
+        model&rsquo;s to give.
       </p>
 
       <p>
@@ -35,10 +37,12 @@ export function AstraFieldTestContent() {
 
       <p>
         So I ran three controlled comparisons against my daily driver,{" "}
-        <strong>GPT-5.6 Terra</strong>. Every comparison used the same rules:
-        byte-identical prompts, the same source snapshot, one attempt per model,
-        no corrective prompts mid-run, and test suites frozen and hashed before
-        either model saw the task.
+        <strong>GPT-5.6 Terra</strong> &mdash; joined in the third test by{" "}
+        <strong>GPT-5.6 Luna</strong>, which proposes while Terra reviews. Every
+        comparison used the same rules: byte-identical prompts, the same source
+        snapshot, one attempt per model on the coding task and three repeats
+        elsewhere, no corrective prompts mid-run, and test suites frozen and
+        hashed before either model saw the task.
       </p>
 
       <p>
@@ -71,11 +75,13 @@ export function AstraFieldTestContent() {
           the blank form field.
         </li>
         <li>
-          <strong>A better model is not a better pipeline &mdash; yet.</strong>{" "}
-          Astra and Terra both ran 12 hypotheses and both got 0 promotions. That
-          is the expected reading for a short research loop, not a failure. It
-          also means we need more branch-days before the loop can rank the two
-          models on outcomes.
+          <strong>Better judgment did not reach my outcomes &mdash; yet.</strong>{" "}
+          Both arms ran 12 hypotheses and both got 0 promotions, which is the
+          expected reading for a short research loop rather than a failure. What
+          the loop did show is efficiency: Astra reached the same evaluated
+          candidates with 25% fewer API calls and half the output tokens. Both
+          model roles changed together in that arm, so it ranks nothing on
+          judgment quality.
         </li>
         <li>
           <strong>Split judgment from enforcement.</strong> Prefer Astra for
@@ -194,8 +200,9 @@ export function AstraFieldTestContent() {
       </blockquote>
 
       <p>
-        Important discipline: those two cases were selected <em>after</em> I saw
-        the patches. They are engineering findings, not a robustness percentage.
+        Important discipline: those two cases were selected <em>after</em> the
+        patches were read, by the same coordinating agent that ran the
+        comparison. They are engineering findings, not a robustness percentage.
         Expanding the denominator after seeing outputs is how people accidentally
         manufacture a 25% improvement.
       </p>
@@ -212,12 +219,15 @@ export function AstraFieldTestContent() {
       </p>
 
       <p>
-        <strong>The setup.</strong> I wrote 50 proposal packets by hand: some
-        sound, some sound-but-caveated, and some deliberately bad &mdash;
-        unfalsifiable claims, guaranteed-profit claims, costs assumed away,
-        parameters retuned after seeing the answer, date ranges chosen with
-        hindsight, invented results, and requests to skip straight to a live
-        order. Each packet went to each model 3 times with identical payloads and
+        <strong>The setup.</strong> 50 proposal packets built around two of my
+        real strategy templates: some sound, some sound-but-caveated, and some
+        deliberately bad &mdash; unfalsifiable claims, guaranteed-profit claims,
+        costs assumed away, parameters retuned after seeing the answer, date
+        ranges chosen with hindsight, invented results, and requests to skip
+        straight to a live order. The packets and their draft verdicts were
+        drafted by a coordinating agent; I reviewed all 50 and signed off the
+        labels before any scored call was made, and the frozen labels match that
+        review. Each packet went to each model 3 times with identical payloads and
         the same low reasoning effort: <strong>300 API calls</strong> total, with
         the correct verdict for every packet fixed in advance.
       </p>
@@ -332,17 +342,19 @@ export function AstraFieldTestContent() {
 
       <p>
         <strong>The setup.</strong> Three independent resets, four simulated days
-        each, two arms &mdash; Terra as both proposer and skeptic, versus Astra in
-        both roles. That is 24 branch-days with real backtests and nothing about
-        the evaluation mocked out.
+        each, two arms &mdash; my usual pairing of Luna proposing and Terra
+        reviewing, versus Astra in both roles. That is 24 branch-days with real
+        backtests and nothing about the evaluation mocked out. Note the confound
+        while reading the table: both model roles change together in the Astra
+        arm, so nothing here separates proposer from reviewer.
       </p>
 
       <table>
         <thead>
           <tr>
             <th>Result</th>
-            <th>GPT-5.6 Terra</th>
-            <th>GPT-6 Astra</th>
+            <th>Luna + Terra</th>
+            <th>Astra + Astra</th>
           </tr>
         </thead>
         <tbody>
@@ -359,7 +371,12 @@ export function AstraFieldTestContent() {
           <tr>
             <td>Main API calls used</td>
             <td>16</td>
-            <td>12</td>
+            <td>12 (&minus;25.0%)</td>
+          </tr>
+          <tr>
+            <td>Output tokens</td>
+            <td>3,505</td>
+            <td>1,731 (&minus;50.6%)</td>
           </tr>
           <tr>
             <td>Feedback actually reached the next day</td>
@@ -398,7 +415,7 @@ export function AstraFieldTestContent() {
       </p>
 
       <p>
-        So &ldquo;Astra: 0 of 12; Terra: 0 of 12&rdquo; is the pipeline
+        So &ldquo;Astra: 0 of 12; Luna + Terra: 0 of 12&rdquo; is the pipeline
         reporting that it worked. The gates were doing their job before the model
         swap and they kept doing it after. A model change that suddenly started
         producing passing candidates on the same data would have been the
@@ -489,6 +506,13 @@ if verdict == "accept" and not gates.pass_all(spec):
           templates, with correlated repeats &mdash; not a production sample.
         </li>
         <li>
+          <strong>Cases drafted by an agent, not adjudicated independently.</strong>{" "}
+          A coordinating agent wrote the packets and the draft verdicts; my
+          review signed them off before any scored call, and the frozen labels
+          match it. That is a recorded human check, not blind third-party
+          adjudication, and the review layer deserves the discount.
+        </li>
+        <li>
           <strong>No cost claim.</strong> Billing was not instrumented, so the
           dollar column stays empty. Astra did use fewer output tokens per
           decision, at higher latency; that is a measurement, not a saving.
@@ -516,7 +540,9 @@ if verdict == "accept" and not gates.pass_all(spec):
         Every frontier release will offer you a new default. The useful response
         is not adoption or skepticism &mdash; it is a frozen test suite, a paired
         run, a hypothesis you were willing to see rejected, and the discipline to
-        report the tie when there is one.
+        report the tie when there is one. Do that and the upgrade still earns
+        something real: Astra has the reviewer&rsquo;s job now, because that is
+        the one place I could prove it deserved it.
       </p>
     </>
   );
