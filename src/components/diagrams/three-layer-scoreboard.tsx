@@ -2,11 +2,15 @@
 // Copyright (c) 2026 Kris Welc. All rights reserved.
 // Commercial license: see /COMMERCIAL-LICENSE.md
 
-interface Bar {
+interface Row {
   readonly label: string;
+  /** Bar fill, 0–100. Ignored when the layer renders a tally. */
   readonly percent: number;
   readonly display: string;
   readonly tone: "terra" | "astra";
+  /** Tally cells: total tested, and how many passed. */
+  readonly tested?: number;
+  readonly passed?: number;
 }
 
 interface Layer {
@@ -14,7 +18,8 @@ interface Layer {
   readonly question: string;
   readonly measure: string;
   readonly sample: string;
-  readonly bars: readonly Bar[];
+  readonly kind: "bars" | "tally";
+  readonly rows: readonly Row[];
   readonly verdict: string;
   readonly won: boolean;
   readonly note: string;
@@ -26,7 +31,8 @@ const LAYERS: readonly Layer[] = [
     question: "Can it fix code?",
     measure: "Frozen tests passed",
     sample: "1 matched bug-fix pair · 16 tests frozen beforehand",
-    bars: [
+    kind: "bars",
+    rows: [
       { label: "GPT-5.6 Terra", percent: 100, display: "16/16", tone: "terra" },
       { label: "GPT-6 Astra", percent: 100, display: "16/16", tone: "astra" },
     ],
@@ -39,7 +45,8 @@ const LAYERS: readonly Layer[] = [
     question: "Can it judge?",
     measure: "Balanced accuracy on accept / reject",
     sample: "50 review packets × 3 repeats × 2 models · 300 API calls",
-    bars: [
+    kind: "bars",
+    rows: [
       { label: "GPT-5.6 Terra", percent: 90.6, display: "90.6%", tone: "terra" },
       { label: "GPT-6 Astra", percent: 96.7, display: "96.7%", tone: "astra" },
     ],
@@ -50,15 +57,30 @@ const LAYERS: readonly Layer[] = [
   {
     index: "03",
     question: "Does the system improve?",
-    measure: "Candidates that cleared the promotion gates",
+    measure: "Hypotheses tested vs promoted",
     sample: "3 independent resets × 4 days × 2 arms · 24 branch-days",
-    bars: [
-      { label: "GPT-5.6 Terra", percent: 0, display: "0", tone: "terra" },
-      { label: "GPT-6 Astra", percent: 0, display: "0", tone: "astra" },
+    kind: "tally",
+    rows: [
+      {
+        label: "GPT-5.6 Terra",
+        percent: 0,
+        display: "0 of 12",
+        tone: "terra",
+        tested: 12,
+        passed: 0,
+      },
+      {
+        label: "GPT-6 Astra",
+        percent: 0,
+        display: "0 of 12",
+        tone: "astra",
+        tested: 12,
+        passed: 0,
+      },
     ],
     verdict: "TIE",
     won: false,
-    note: "24 hypotheses tested, 24 rejected — in both arms. Fewer blocks and fewer calls on the Astra side.",
+    note: "Every branch-day is one hypothesis put through the frozen gates. All 24 were tested and all 24 were rejected — the expected reading for a research loop, in both arms.",
   },
 ];
 
@@ -108,23 +130,47 @@ export function ThreeLayerScoreboard() {
             </div>
 
             <div className="space-y-2">
-              {layer.bars.map((bar) => (
-                <div key={bar.label} className="flex items-center gap-3">
+              {layer.rows.map((row) => (
+                <div key={row.label} className="flex items-center gap-3">
                   <span className="w-32 shrink-0 font-mono text-xs text-waste-sand">
-                    {bar.label}
+                    {row.label}
                   </span>
-                  <span className="h-2.5 flex-1 overflow-hidden rounded-sm bg-waste-bg">
-                    <span
-                      className={`block h-full rounded-sm ${BAR_TONE[bar.tone]}`}
-                      style={{ width: `${Math.max(bar.percent, 1.5)}%` }}
-                    />
-                  </span>
+
+                  {layer.kind === "bars" ? (
+                    <span className="h-2.5 flex-1 overflow-hidden rounded-sm bg-waste-bg">
+                      <span
+                        className={`block h-full rounded-sm ${BAR_TONE[row.tone]}`}
+                        style={{ width: `${row.percent}%` }}
+                      />
+                    </span>
+                  ) : (
+                    <span className="flex flex-1 gap-1">
+                      {Array.from({ length: row.tested ?? 0 }, (_, i) => (
+                        <span
+                          key={i}
+                          className={`h-2.5 flex-1 rounded-sm border ${
+                            i < (row.passed ?? 0)
+                              ? `border-transparent ${BAR_TONE[row.tone]}`
+                              : "border-waste-ash/40 bg-transparent"
+                          }`}
+                        />
+                      ))}
+                    </span>
+                  )}
+
                   <span className="w-16 shrink-0 text-right font-mono text-xs text-waste-bone">
-                    {bar.display}
+                    {row.display}
                   </span>
                 </div>
               ))}
             </div>
+
+            {layer.kind === "tally" && (
+              <p className="mt-2 font-mono text-xs text-waste-ash">
+                Each cell is one branch-day. Outlined = tested and rejected.
+                Filled = promoted.
+              </p>
+            )}
 
             <p className="mt-3 text-sm leading-relaxed text-waste-sand">
               {layer.note}
@@ -135,8 +181,7 @@ export function ThreeLayerScoreboard() {
 
       <figcaption className="border-t border-waste-border bg-waste-bg/40 px-5 py-3 font-mono text-xs leading-relaxed text-waste-ash">
         Identical prompts, identical source snapshots, one attempt per model, no
-        corrective prompts mid-run. Bars are scaled to each row&rsquo;s own
-        measure.
+        corrective prompts mid-run. Each row is scaled to its own measure.
       </figcaption>
     </figure>
   );
