@@ -7,12 +7,10 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardAction,
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { WastelandBadge } from "@/components/wasteland-badge";
-import { GitHubStarButton } from "@/components/github-star-button";
 import type { Article } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -73,11 +71,6 @@ export function ArticleCard({
             </span>
           </div>
         </div>
-        {article.repoUrl && (
-          <CardAction>
-            <GitHubStarButton variant="compact" />
-          </CardAction>
-        )}
       </CardHeader>
 
       <CardContent className="space-y-4">
