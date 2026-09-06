@@ -112,6 +112,44 @@ export const PROJECTS: readonly Project[] = [
 
 export const ARTICLES: readonly Article[] = [
   {
+    id: "astra-field-test",
+    slug: "astra-field-test",
+    date: "2026-09-06",
+    title: "A Frontier Model Made Better Calls and Found Zero Winners",
+    hook: "I gave GPT-6 Astra the same work my usual model already does \u2014 one bug fix, 300 review calls, 24 days of a full research loop \u2014 with frozen tests written before either model started. Judgment improved measurably. Outcomes did not move at all. Both results matter, and the second one is why I trust the first.",
+    tags: ["Model Evaluation", "Agent Judgment", "Measured Results"],
+    accent: "toxic",
+    readTime: "9 min",
+    topicCount: 5,
+    topics: [
+      {
+        title: "Passing Tests Measures Your Tests",
+        summary:
+          "Both models went 100% on a frozen 16-case suite. Post-hoc review found two regressions in one patch \u2014 microsecond timestamps and a columnless empty result \u2014 that the suite never asked about.",
+      },
+      {
+        title: "300 Matched Judgment Calls",
+        summary:
+          "+2.9 pp decision accuracy, +6.1 pp balanced accuracy, 0% wrongly blocked good ideas versus 16.7%, and identical verdicts across all three repeats.",
+      },
+      {
+        title: "Why the 'Safer' Model Looked Safer",
+        summary:
+          "Every false acceptance came from one fixture family: a blank falsification field. One model audited the form, the other audited the claim. Only one of those is a risk instinct.",
+      },
+      {
+        title: "The Loop Test Nobody Runs",
+        summary:
+          "24 branch-days of propose \u2192 review \u2192 real backtest \u2192 feed forward. Fewer blocks, fewer calls, stable feedback \u2014 and zero candidates cleared the hard gates in either arm.",
+      },
+      {
+        title: "Split Judgment From Enforcement",
+        summary:
+          "Give the stronger model the reasoning; keep required fields, budgets, and promotion thresholds in deterministic code. Three lines of enforcement erase the model's entire false-acceptance category.",
+      },
+    ],
+  },
+  {
     id: "production-agents",
     slug: "production-agents",
     date: "2026-03-10",

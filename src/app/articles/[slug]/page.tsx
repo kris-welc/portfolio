@@ -8,8 +8,10 @@ import { AgentAlgebraContent } from "@/lib/articles/agent-algebra";
 import { DualLayerRegimeContent } from "@/lib/articles/dual-layer-regime";
 import { VpinConvictionContent } from "@/lib/articles/vpin-conviction";
 import { ProductionAgentsContent } from "@/lib/articles/production-agents";
+import { AstraFieldTestContent } from "@/lib/articles/astra-field-test";
 
 const CONTENT_MAP: Record<string, React.ComponentType> = {
+  "astra-field-test": AstraFieldTestContent,
   "production-agents": ProductionAgentsContent,
   "control-hierarchy": ControlHierarchyContent,
   "agent-algebra": AgentAlgebraContent,

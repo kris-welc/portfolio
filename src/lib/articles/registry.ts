@@ -6,6 +6,10 @@ export interface ArticleEntry {
 }
 
 export const ARTICLE_REGISTRY: Record<string, () => Promise<ComponentType>> = {
+  "astra-field-test": async () => {
+    const mod = await import("./astra-field-test");
+    return mod.AstraFieldTestContent;
+  },
   "production-agents": async () => {
     const mod = await import("./production-agents");
     return mod.ProductionAgentsContent;
