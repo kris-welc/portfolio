@@ -120,7 +120,7 @@ export const ARTICLES: readonly Article[] = [
     id: "astra-field-test",
     slug: "astra-field-test",
     date: "2026-09-06",
-    title: "A Frontier Model Made Better Calls and Found Zero Winners",
+    title: "A Better Model Is Not a Better Pipeline",
     image: "/images/astra-field-test.jpg",
     imageThumb: "/images/astra-field-test-thumb.jpg",
     imageAlt:
