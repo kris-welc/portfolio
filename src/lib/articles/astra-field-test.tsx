@@ -1,9 +1,11 @@
+import { ThreeLayerScoreboard } from "@/components/diagrams/three-layer-scoreboard";
+
 export function AstraFieldTestContent() {
   return (
     <>
       <p>
-        <strong>In one sentence:</strong> I gave a new frontier model the same
-        work my usual model already does, measured three layers of it, and found
+        <strong>In one sentence:</strong> I gave GPT-6 Astra the same work
+        GPT-5.6 Terra already does for me, measured three layers of it, and found
         better judgment with identical outcomes &mdash; because the outcomes were
         never the model&rsquo;s to give.
       </p>
@@ -32,38 +34,38 @@ export function AstraFieldTestContent() {
       </p>
 
       <p>
-        So I ran three controlled comparisons against my daily driver
-        (GPT-5.6 Terra). Same tasks. Same snapshots. Same wall-clock budget. No
-        corrective prompts mid-run. Frozen, hashed test suites written before
-        either model started.
+        So I ran three controlled comparisons against my daily driver,{" "}
+        <strong>GPT-5.6 Terra</strong>. Every comparison used the same rules:
+        byte-identical prompts, the same source snapshot, one attempt per model,
+        no corrective prompts mid-run, and test suites frozen and hashed before
+        either model saw the task.
       </p>
 
-      <p>Three layers, because &ldquo;is it better?&rdquo; is three questions:</p>
-      <ul>
-        <li>
-          <strong>Can it fix code?</strong> One matched bug-fix pair on a real
-          adapter.
-        </li>
-        <li>
-          <strong>Can it judge?</strong> 300 matched review calls on
-          accept/reject decisions.
-        </li>
-        <li>
-          <strong>Does the system get better?</strong> 24 branch-days of a full
-          propose &rarr; review &rarr; backtest &rarr; feed-forward loop.
-        </li>
-      </ul>
+      <p>
+        I ran three, because &ldquo;is it better?&rdquo; is really three separate
+        questions.
+      </p>
+
+      <ThreeLayerScoreboard />
 
       <hr />
 
       <h2>Test 1: The Exam You Wrote vs the Cases You Forgot</h2>
 
       <p>
-        A candle-aggregation bug: overlapping input windows produced different
-        &ldquo;completed&rdquo; bars, so research and live execution disagreed
-        about reality. I froze 6 correctness cases, 8 robustness cases, and 2
-        regression guards, then handed both models the identical prompt bytes and
-        source snapshot.
+        <strong>The bug.</strong> A time-bucketing function: it takes a stream of
+        timestamped records and groups them into fixed-width intervals, returning
+        only the intervals that are already complete. When the input window
+        overlapped a previous one, it returned a <em>different</em> set of
+        completed intervals for the same underlying records &mdash; so two
+        consumers of the same function disagreed about what had already happened.
+      </p>
+
+      <p>
+        <strong>The setup.</strong> Before either model ran, I wrote and hashed
+        16 tests: 6 for correctness, 8 for robustness, 2 as regression guards
+        against behaviour that already worked. Both models then received the same
+        prompt bytes and the same source snapshot, and each got one attempt.
       </p>
 
       <table>
@@ -71,8 +73,8 @@ export function AstraFieldTestContent() {
           <tr>
             <th>Measure</th>
             <th>Starting code</th>
-            <th>Usual model</th>
-            <th>Astra</th>
+            <th>GPT-5.6 Terra</th>
+            <th>GPT-6 Astra</th>
           </tr>
         </thead>
         <tbody>
@@ -98,16 +100,16 @@ export function AstraFieldTestContent() {
       </table>
 
       <p>
-        On the exam I wrote: <strong>a tie</strong>. Zero percentage points
-        between them. If I had stopped there, the honest headline would be
-        &ldquo;new model, same result, slightly faster.&rdquo;
+        <strong>The result: a tie.</strong> Zero percentage points between them.
+        If I had stopped there, the honest headline would be &ldquo;new model,
+        same result, slightly faster.&rdquo;
       </p>
 
       <p>
-        Then I read the patches. Not the diffs&rsquo; size &mdash; the
-        assumptions. Two of them looked load-bearing, so I built two extra inputs
-        and ran them against both finished patches <em>and</em> the original
-        code:
+        Then I read the patches &mdash; not the size of the diffs, but the
+        assumptions inside them. Two assumptions looked load-bearing, so I built
+        two extra inputs and ran them against both finished patches{" "}
+        <em>and</em> the original code:
       </p>
 
       <table>
@@ -115,19 +117,19 @@ export function AstraFieldTestContent() {
           <tr>
             <th>Extra input</th>
             <th>Original</th>
-            <th>Usual model</th>
-            <th>Astra</th>
+            <th>GPT-5.6 Terra</th>
+            <th>GPT-6 Astra</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Timestamps stored at microsecond resolution</td>
-            <td>2 candles</td>
-            <td>0 candles</td>
-            <td>2 candles</td>
+            <td>2 intervals</td>
+            <td>0 intervals</td>
+            <td>2 intervals</td>
           </tr>
           <tr>
-            <td>Empty result with no columns (what the real fetcher returns)</td>
+            <td>Empty input with no columns (what the real source returns)</td>
             <td>empty</td>
             <td>raises</td>
             <td>empty</td>
@@ -136,11 +138,13 @@ export function AstraFieldTestContent() {
       </table>
 
       <p>
-        Both regressions were <strong>introduced</strong> relative to the code we
-        started from, and both passed my frozen suite anyway. One patch assumed
-        nanosecond storage in its arithmetic. The same patch validated required
-        columns unconditionally, so the fetcher&rsquo;s normal &ldquo;no
-        data&rdquo; shape became an exception.
+        Both failures were <strong>introduced</strong> by the Terra patch
+        relative to the code we started from, and both passed the frozen suite
+        anyway. The patch hard-coded one timestamp unit in its arithmetic, so
+        finer-grained inputs silently produced nothing. It also validated
+        required columns unconditionally, so the data source&rsquo;s normal
+        &ldquo;no rows yet&rdquo; response became a crash instead of an empty
+        result.
       </p>
 
       <blockquote>
@@ -162,26 +166,29 @@ export function AstraFieldTestContent() {
       <h2>Test 2: 300 Calls on the Same Judgment Call</h2>
 
       <p>
-        My research pipeline has a skeptic role: given a proposal, accept it for
-        a costly out-of-sample test, or reject it. Wrong rejections waste good
-        ideas. Wrong acceptances waste compute and pollute the ledger.
+        <strong>The job.</strong> My research pipeline has a skeptic role: read a
+        proposal, then either accept it for an expensive out-of-sample test or
+        reject it. A wrong rejection throws away a good idea. A wrong acceptance
+        burns compute and puts a bad result into the permanent ledger.
       </p>
 
       <p>
-        I constructed 50 proposal packets across two strategy templates &mdash;
-        sound ones, caveated ones, and adversarial ones (unfalsifiable claims,
-        guaranteed-profit claims, zero-cost rescues, post-hoc retuning, hindsight
-        window selection, invented results, requests to place a live order). Then
-        3 repeats per case per model: <strong>300 API calls</strong>, identical
-        payloads, low reasoning effort on both sides.
+        <strong>The setup.</strong> I wrote 50 proposal packets by hand: some
+        sound, some sound-but-caveated, and some deliberately bad &mdash;
+        unfalsifiable claims, guaranteed-profit claims, costs assumed away,
+        parameters retuned after seeing the answer, date ranges chosen with
+        hindsight, invented results, and requests to skip straight to a live
+        order. Each packet went to each model 3 times with identical payloads and
+        the same low reasoning effort: <strong>300 API calls</strong> total, with
+        the correct verdict for every packet fixed in advance.
       </p>
 
       <table>
         <thead>
           <tr>
             <th>Metric</th>
-            <th>Usual model</th>
-            <th>Astra</th>
+            <th>GPT-5.6 Terra</th>
+            <th>GPT-6 Astra</th>
             <th>Delta</th>
           </tr>
         </thead>
@@ -226,51 +233,49 @@ export function AstraFieldTestContent() {
       </table>
 
       <p>
-        Astra was more accurate, perfectly self-consistent across repeats, and
-        never blocked a justified proposal. It was also <em>less</em> safe on one
-        axis: three times more false acceptances.
+        <strong>The result.</strong> Astra was more accurate, gave the same
+        verdict every time it saw the same packet, and never blocked a justified
+        proposal. It was also <em>less</em> safe on one axis: three times more
+        false acceptances. That tradeoff is the interesting part, and it turned
+        out not to be noise.
       </p>
+
+      <h3>Every False Acceptance Came From One Kind of Packet</h3>
 
       <p>
-        That tradeoff is the interesting part, and it is not random noise.
+        I read every disagreement. All six of Astra&rsquo;s false acceptances
+        &mdash; and both of Terra&rsquo;s &mdash; landed on the same packet type:
+        the one where the <strong>&ldquo;how would this be proven
+        wrong?&rdquo;</strong> field was left blank, while the rest of the packet
+        still described a real mechanism, real costs, and a minimum sample size.
       </p>
 
-      <h3>Every False Acceptance Came From One Fixture Family</h3>
-
-      <p>
-        I pulled the disagreements. All six of Astra&rsquo;s false acceptances
-        &mdash; and both of the other model&rsquo;s &mdash; landed on the same
-        case type: the packet where the <strong>falsification field was
-        blank</strong>, while the underlying template still carried a real
-        mechanism, cost assumptions, and a minimum trade count.
-      </p>
-
-      <p>Two different readings of the same packet:</p>
+      <p>Two defensible readings of that same packet:</p>
 
       <ul>
         <li>
-          <strong>The usual model:</strong> the required field is empty,
-          therefore no stated rejection condition, therefore reject.
+          <strong>Terra:</strong> a required field is empty, so no rejection
+          condition was stated, so reject.
         </li>
         <li>
-          <strong>Astra:</strong> the claim is testable from the registered
-          evidence &mdash; run it out-of-sample after costs &mdash; therefore
-          accept, while noting the blank field.
+          <strong>Astra:</strong> the claim is still testable from the evidence
+          that <em>is</em> there &mdash; run it out-of-sample after costs &mdash;
+          so accept, and flag the blank field.
         </li>
       </ul>
 
       <p>
         One model audited the <em>form</em>. The other audited the{" "}
-        <em>claim</em>. Neither is wrong in isolation; my prompt never said which
-        one I wanted. That is the same pattern as Test 1: when the specification
-        has a hole, the stronger model fills it with intent, and the weaker one
-        fills it with literalism.
+        <em>claim</em>. Neither is wrong on its own; my prompt never said which I
+        wanted. That is the same pattern as Test 1: when the specification has a
+        hole, the stronger model fills it with intent and the weaker one fills it
+        with literalism.
       </p>
 
       <p>
-        Which also means the &ldquo;safer&rdquo; scoreboard was misleading. Lower
-        false acceptance came from surface pedantry on one fixture family, not
-        from better risk sense &mdash; and it cost 8 wrongly blocked good ideas.
+        Which means the &ldquo;safer&rdquo; scoreboard was misleading. Terra&rsquo;s
+        lower false-acceptance rate came from rejecting an empty field, not from
+        better risk sense &mdash; and it cost 8 wrongly blocked good ideas.
       </p>
 
       <hr />
@@ -278,25 +283,27 @@ export function AstraFieldTestContent() {
       <h2>Test 3: The Whole Loop, Not the Prompt</h2>
 
       <p>
-        Single calls are the easy question. The real question is whether the{" "}
-        <em>system</em> improves. So I ran the closed loop on real snapshot code:
+        A single good answer is the easy question. The real question is whether
+        the <em>system</em> gets better over time. So I ran the whole closed loop
+        on real snapshot code:
       </p>
 
-      <pre><code>{`select candidate → propose → review → real walk-forward
-  → outcome ledger → select again (next day)`}</code></pre>
+      <pre><code>{`pick a candidate → propose a change → review it → run a real backtest
+  → write the outcome to a ledger → pick again tomorrow, knowing that`}</code></pre>
 
       <p>
-        Three independent resets, four simulated days each, two arms (usual
-        proposer+skeptic vs Astra in both roles): 24 branch-days, real backtests,
-        no mocked evaluation.
+        <strong>The setup.</strong> Three independent resets, four simulated days
+        each, two arms &mdash; Terra as both proposer and skeptic, versus Astra in
+        both roles. That is 24 branch-days with real backtests and nothing about
+        the evaluation mocked out.
       </p>
 
       <table>
         <thead>
           <tr>
             <th>Result</th>
-            <th>Usual stack</th>
-            <th>Astra</th>
+            <th>GPT-5.6 Terra</th>
+            <th>GPT-6 Astra</th>
           </tr>
         </thead>
         <tbody>
@@ -335,16 +342,16 @@ export function AstraFieldTestContent() {
       </table>
 
       <p>
-        Astra moved more ideas into evaluation, using fewer calls, with a stable
-        feedback cycle. And it found exactly as many winners as the old stack:
-        none.
+        Astra moved more ideas into evaluation, used fewer calls to do it, and
+        kept the feedback cycle intact. It also found exactly as many winners as
+        Terra did: none.
       </p>
 
       <p>
-        That is not a disappointing result. It is the result that tells you the
-        harness is honest. The gates were doing their job before the upgrade, and
+        That is not a disappointing result. It is the result that tells me the
+        harness is honest. The gates were doing their job before the upgrade and
         they kept doing it after. A model swap that suddenly produced passing
-        strategies would have been evidence of a leak, not of intelligence.
+        candidates would have been evidence of a leak, not of intelligence.
       </p>
 
       <hr />

@@ -116,7 +116,7 @@ export const ARTICLES: readonly Article[] = [
     slug: "astra-field-test",
     date: "2026-09-06",
     title: "A Frontier Model Made Better Calls and Found Zero Winners",
-    hook: "I gave GPT-6 Astra the same work my usual model already does \u2014 one bug fix, 300 review calls, 24 days of a full research loop \u2014 with frozen tests written before either model started. Judgment improved measurably. Outcomes did not move at all. Both results matter, and the second one is why I trust the first.",
+    hook: "I gave GPT-6 Astra the same work GPT-5.6 Terra already does for me \u2014 one bug fix, 300 review calls, 24 days of a full research loop \u2014 with frozen tests written before either model started. Judgment improved measurably. Outcomes did not move at all. Both results matter, and the second one is why I trust the first.",
     tags: ["Model Evaluation", "Agent Judgment", "Measured Results"],
     accent: "toxic",
     readTime: "9 min",
@@ -125,7 +125,7 @@ export const ARTICLES: readonly Article[] = [
       {
         title: "Passing Tests Measures Your Tests",
         summary:
-          "Both models went 100% on a frozen 16-case suite. Post-hoc review found two regressions in one patch \u2014 microsecond timestamps and a columnless empty result \u2014 that the suite never asked about.",
+          "Both models went 100% on a frozen 16-test suite. Reading the patches afterwards found two failures Terra introduced \u2014 a hard-coded timestamp unit and a crash on empty input \u2014 that the suite never asked about.",
       },
       {
         title: "300 Matched Judgment Calls",
