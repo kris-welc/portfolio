@@ -48,6 +48,39 @@ export function AstraFieldTestContent() {
 
       <ThreeLayerScoreboard />
 
+      <h2>The Five Conclusions, Up Front</h2>
+
+      <ol>
+        <li>
+          <strong>Frozen tests measure your tests.</strong> Both models passed
+          all 16. Only one of them avoided breaking behaviour nobody had written
+          down.
+        </li>
+        <li>
+          <strong>Judgment improved, and it is measurable.</strong> +6.1 pp
+          balanced accuracy across 300 matched calls, zero sound proposals
+          wrongly blocked, and the same verdict on every repeat.
+        </li>
+        <li>
+          <strong>&ldquo;Safer&rdquo; can just be pedantry.</strong>{" "}
+          Terra&rsquo;s lower false-acceptance rate came from rejecting an empty
+          field, not from better risk sense &mdash; and it cost 8 wrongly blocked
+          good ideas.
+        </li>
+        <li>
+          <strong>A better model is not a better pipeline.</strong> 24
+          hypotheses tested, 24 rejected, in both arms. For a research loop, that
+          is the expected reading, not a failure.
+        </li>
+        <li>
+          <strong>Split judgment from enforcement.</strong> Let the model reason
+          about the claim; keep required fields, budgets, and promotion
+          thresholds in deterministic code. That beats picking a favourite model.
+        </li>
+      </ol>
+
+      <p>The rest of this piece is how each number was produced.</p>
+
       <hr />
 
       <h2>Test 1: The Exam You Wrote vs the Cases You Forgot</h2>
@@ -343,15 +376,36 @@ export function AstraFieldTestContent() {
 
       <p>
         Astra moved more ideas into evaluation, used fewer calls to do it, and
-        kept the feedback cycle intact. It also found exactly as many winners as
-        Terra did: none.
+        kept the feedback cycle intact. It also promoted exactly as many
+        candidates as Terra did: none.
+      </p>
+
+      <h3>Zero Is the Normal Reading of a Hypothesis Test</h3>
+
+      <p>
+        Every branch-day here is a hypothesis test, not a lottery ticket. A
+        candidate is proposed, and the frozen gates &mdash; out-of-sample
+        performance after costs, a minimum sample size, stability across the
+        window &mdash; decide whether the evidence is strong enough to promote
+        it. The base rate for a freshly generated candidate clearing gates like
+        those is low; that is exactly why the gates exist.
       </p>
 
       <p>
-        That is not a disappointing result. It is the result that tells me the
-        harness is honest. The gates were doing their job before the upgrade and
-        they kept doing it after. A model swap that suddenly produced passing
-        candidates would have been evidence of a leak, not of intelligence.
+        So &ldquo;24 hypotheses tested, 24 rejected&rdquo; is the pipeline
+        reporting that it worked. The gates were doing their job before the model
+        swap and they kept doing it after. A model change that suddenly started
+        producing passing candidates on the same data would have been the
+        alarming result &mdash; evidence of a leak, not of intelligence.
+      </p>
+
+      <p>
+        It also means this test is honest about its own limits. With zero
+        promotions in both arms, it cannot rank the two models on the quality of
+        their <em>output</em>. What it can show &mdash; and does &mdash; is that
+        the loop runs end to end, that yesterday&rsquo;s rejection reaches
+        tomorrow&rsquo;s proposal, and that the Astra arm reached the same verdict
+        with fewer blocks and fewer API calls.
       </p>
 
       <hr />
@@ -449,36 +503,11 @@ if verdict == "accept" and not gates.pass_all(spec):
 
       <hr />
 
-      <h2>Key Takeaways</h2>
-      <ol>
-        <li>
-          <strong>Frozen tests measure your tests.</strong> Both models scored
-          100%; only one avoided breaking behavior nobody had written down.
-        </li>
-        <li>
-          <strong>Judgment improved, measurably.</strong> +6.1 pp balanced
-          accuracy, 0% wrongly blocked ideas, 100% agreement across repeats.
-        </li>
-        <li>
-          <strong>&ldquo;Safer&rdquo; can be pedantry.</strong> The lower false
-          acceptance rate came from rejecting blank fields, and it cost real
-          good ideas.
-        </li>
-        <li>
-          <strong>A better model is not a better pipeline.</strong> Same loop,
-          zero gate passes, both arms. Outcomes stay earned.
-        </li>
-        <li>
-          <strong>Split the roles.</strong> Model judges the claim, code enforces
-          the rules. That combination is strictly better than choosing a
-          personality.
-        </li>
-      </ol>
-
       <p>
         Every frontier release will offer you a new default. The useful response
         is not adoption or skepticism &mdash; it is a frozen test suite, a paired
-        run, and the discipline to report the tie when there is one.
+        run, a hypothesis you were willing to see rejected, and the discipline to
+        report the tie when there is one.
       </p>
     </>
   );

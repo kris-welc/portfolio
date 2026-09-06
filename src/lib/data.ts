@@ -149,7 +149,7 @@ export const ARTICLES: readonly Article[] = [
       {
         title: "The Loop Test Nobody Runs",
         summary:
-          "24 branch-days of propose \u2192 review \u2192 real backtest \u2192 feed forward. Fewer blocks, fewer calls, stable feedback \u2014 and zero candidates cleared the hard gates in either arm.",
+          "24 branch-days of propose \u2192 review \u2192 real backtest \u2192 feed forward. Fewer blocks, fewer calls, stable feedback \u2014 and 24 hypotheses tested and rejected in both arms, which is what a working research loop looks like.",
       },
       {
         title: "Split Judgment From Enforcement",

@@ -58,7 +58,7 @@ const LAYERS: readonly Layer[] = [
     ],
     verdict: "TIE",
     won: false,
-    note: "Fewer blocks and fewer calls on the Astra arm — and the same number of winners: none.",
+    note: "24 hypotheses tested, 24 rejected — in both arms. Fewer blocks and fewer calls on the Astra side.",
   },
 ];
 
