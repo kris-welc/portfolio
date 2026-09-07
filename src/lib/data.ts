@@ -149,7 +149,7 @@ export const ARTICLES: readonly Article[] = [
       {
         title: "The Loop Test Nobody Runs",
         summary:
-          "24 branch-days of propose \u2192 review \u2192 real backtest \u2192 feed forward, Astra in both roles against my usual Luna proposer and Terra reviewer. Same candidates, same zero promotions \u2014 but Astra needed 25% fewer calls and half the output tokens to get there.",
+          "24 branch-days of propose \u2192 review \u2192 real evaluation \u2192 feed forward, Astra in both roles against my usual Luna proposer and Terra reviewer. Same candidates, same zero promotions \u2014 but Astra needed 25% fewer calls and half the output tokens to get there.",
       },
       {
         title: "Split Judgment From Enforcement",

@@ -213,18 +213,18 @@ export function AstraFieldTestContent() {
 
       <p>
         <strong>The job.</strong> My research pipeline has a skeptic role: read a
-        proposal, then either accept it for an expensive out-of-sample test or
+        proposal, then either accept it for an expensive evaluation run or
         reject it. A wrong rejection throws away a good idea. A wrong acceptance
         burns compute and puts a bad result into the permanent ledger.
       </p>
 
       <p>
-        <strong>The setup.</strong> 50 proposal packets built around two of my
-        real strategy templates: some sound, some sound-but-caveated, and some
-        deliberately bad &mdash; unfalsifiable claims, guaranteed-profit claims,
-        costs assumed away, parameters retuned after seeing the answer, date
-        ranges chosen with hindsight, invented results, and requests to skip
-        straight to a live order. The packets and their draft verdicts were
+        <strong>The setup.</strong> 50 proposal packets built around two real
+        templates from the project: some sound, some sound-but-caveated, and some
+        deliberately bad &mdash; unfalsifiable claims, guaranteed-success claims,
+        known costs assumed away, parameters retuned after seeing the answer,
+        evaluation windows chosen with hindsight, invented results, and requests
+        to skip the evaluation entirely. The packets and their draft verdicts were
         drafted by a coordinating agent; I reviewed all 50 and signed off the
         labels before any scored call was made, and the frozen labels match that
         review. Each packet went to each model 3 times with identical payloads and
@@ -296,7 +296,8 @@ export function AstraFieldTestContent() {
         &mdash; and both of Terra&rsquo;s &mdash; landed on the same packet type:
         the one where the <strong>&ldquo;how would this be proven
         wrong?&rdquo;</strong> field was left blank, while the rest of the packet
-        still described a real mechanism, real costs, and a minimum sample size.
+        still described a real mechanism, its known costs, and a minimum sample
+        size.
       </p>
 
       <p>Two defensible readings of that same packet:</p>
@@ -308,8 +309,8 @@ export function AstraFieldTestContent() {
         </li>
         <li>
           <strong>Astra:</strong> the claim is still testable from the evidence
-          that <em>is</em> there &mdash; run it out-of-sample after costs &mdash;
-          so accept, and flag the blank field.
+          that <em>is</em> there &mdash; run it on held-out data with costs
+          included &mdash; so accept, and flag the blank field.
         </li>
       </ul>
 
@@ -337,14 +338,14 @@ export function AstraFieldTestContent() {
         on real snapshot code:
       </p>
 
-      <pre><code>{`pick a candidate → propose a change → review it → run a real backtest
+      <pre><code>{`pick a candidate → propose a change → review it → run a real evaluation
   → write the outcome to a ledger → pick again tomorrow, knowing that`}</code></pre>
 
       <p>
         <strong>The setup.</strong> Three independent resets, four simulated days
         each, two arms &mdash; my usual pairing of Luna proposing and Terra
         reviewing, versus Astra in both roles. That is 24 branch-days with real
-        backtests and nothing about the evaluation mocked out. Note the confound
+        evaluation runs and nothing about the scoring mocked out. Note the confound
         while reading the table: both model roles change together in the Astra
         arm, so nothing here separates proposer from reviewer.
       </p>
@@ -407,8 +408,8 @@ export function AstraFieldTestContent() {
 
       <p>
         Every branch-day here is a hypothesis test, not a lottery ticket. A
-        candidate is proposed, and the frozen gates &mdash; out-of-sample
-        performance after costs, a minimum sample size, stability across the
+        candidate is proposed, and the frozen gates &mdash; held-out performance
+        with costs included, a minimum sample size, stability across the
         window &mdash; decide whether the evidence is strong enough to promote
         it. The base rate for a freshly generated candidate clearing gates like
         those is low; that is exactly why the gates exist.
@@ -451,8 +452,9 @@ export function AstraFieldTestContent() {
 
       <p>
         <strong>Never give it the enforcement.</strong> Required fields, budgets,
-        cost scenarios, promotion thresholds, order authority &mdash; those stay
-        in deterministic code that cannot be talked out of a decision.
+        cost scenarios, promotion thresholds, and what the system is allowed to
+        act on &mdash; those stay in deterministic code that cannot be talked out
+        of a decision.
       </p>
 
       <pre><code>{`# the fix is boring, and it is not a prompt
@@ -518,8 +520,8 @@ if verdict == "accept" and not gates.pass_all(spec):
           decision, at higher latency; that is a measurement, not a saving.
         </li>
         <li>
-          <strong>No profitability claim.</strong> Zero gates cleared. Nothing
-          here says anything about returns.
+          <strong>No downstream-impact claim.</strong> Zero gates cleared, so
+          nothing here says anything about what the pipeline ultimately produces.
         </li>
         <li>
           <strong>Not blinded.</strong> I knew which arm was which while
