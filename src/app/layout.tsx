@@ -25,7 +25,7 @@ const shareTechMono = Share_Tech_Mono({
 
 const SITE_URL = "https://kris-welc.github.io";
 const SITE_DESCRIPTION =
-  "Field notes on autonomous systems, algorithmic trading, and agent architectures — measured, not demoed.";
+  "Field notes on autonomous systems, quantitative research, and agent architectures — measured, not demoed.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

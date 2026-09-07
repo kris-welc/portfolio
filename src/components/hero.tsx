@@ -2,7 +2,7 @@ import { StatusIndicator } from "@/components/status-indicator";
 import { WastelandBadge } from "@/components/wasteland-badge";
 
 const DOMAINS = [
-  { label: "Algorithmic Trading", variant: "amber" as const },
+  { label: "Quantitative Research", variant: "amber" as const },
   { label: "Macro Intelligence", variant: "toxic" as const },
   { label: "Scenario Modeling", variant: "rust" as const },
   { label: "Autonomous Agents", variant: "bone" as const },

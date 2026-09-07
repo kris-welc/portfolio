@@ -53,7 +53,7 @@ export default function Image() {
               lineHeight: 1.35,
             }}
           >
-            Autonomous systems, algorithmic trading, agent architectures —
+            Autonomous systems, quantitative research, agent architectures —
             measured, not demoed.
           </div>
         </div>

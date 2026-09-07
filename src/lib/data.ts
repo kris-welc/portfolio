@@ -66,7 +66,7 @@ export const PROJECTS: readonly Project[] = [
     name: "Alpha Agent",
     status: "research",
     description:
-      "Post-ASI scenario simulator using Bayesian weighting with market-anchored priors from Metaculus and Polymarket. Morris screening + Sobol sensitivity analysis across 20-parameter space.",
+      "Post-ASI scenario simulator using Bayesian weighting with priors anchored to public forecasting platforms. Morris screening + Sobol sensitivity analysis across 20-parameter space.",
     metrics: [
       { value: "5", label: "Scenarios" },
       { value: "20", label: "Parameters" },
@@ -92,26 +92,26 @@ export const PROJECTS: readonly Project[] = [
     name: "V33 MoneyTrees",
     status: "live",
     description:
-      "Algorithmic perpetual futures trader with adaptive regime detection, Bayesian Thompson Sampling signal weighting, ADWIN drift detection, and Renko-based entries.",
+      "Autonomous decision engine with adaptive regime detection, Bayesian Thompson Sampling signal weighting, ADWIN drift detection, and event-based triggers.",
     metrics: [
       { value: "98.3%", label: "MC Confidence" },
-      { value: "66%", label: "Win Rate" },
-      { value: "2.02", label: "Profit Factor" },
+      { value: "ADWIN", label: "Drift Detection" },
+      { value: "24/7", label: "Unattended" },
     ],
-    tags: ["Python", "Bybit", "Thompson Sampling", "VPIN/CVD"],
+    tags: ["Python", "Regime Detection", "Thompson Sampling", "Drift"],
   },
   {
     id: "SYS::COPYBOT",
     name: "Copybot",
     status: "live",
     description:
-      "Multi-feed prediction market trading system with two-path ensemble voting, NBA Elo modeling, Binance OBI signals, and automated position management with Kelly sizing.",
+      "Multi-feed forecasting system with two-path ensemble voting, Elo-style rating models, order-book imbalance features, and automated exposure management.",
     metrics: [
       { value: "2-Path", label: "Ensemble" },
       { value: "4", label: "Signal Feeds" },
-      { value: "Kelly", label: "Sizing" },
+      { value: "Auto", label: "Exposure" },
     ],
-    tags: ["Python", "Polymarket", "Elo Model", "Ensemble"],
+    tags: ["Python", "Ensemble", "Rating Models", "Forecasting"],
   },
 ] as const;
 
@@ -429,14 +429,14 @@ export const SYSTEM_LAYERS: readonly SystemLayer[] = [
   {
     name: "Intelligence Layer",
     description:
-      "Sybil + Alpha Agent provide macro signals, scenario analysis, and regime detection across 68 instruments",
+      "Sybil + Alpha Agent provide macro signals, scenario analysis, and regime detection across 68 series",
     icon: "monitor",
     accent: "amber",
   },
   {
     name: "Execution Layer",
     description:
-      "V33 and Copybot execute trades autonomously across crypto perps and prediction markets, 24/7",
+      "V33 and Copybot turn those signals into decisions autonomously, unattended, 24/7",
     icon: "bolt",
     accent: "toxic",
   },
